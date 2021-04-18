@@ -1,0 +1,26 @@
+<div class="container">
+  <div class="row align-items-center">
+    <div class="col-3">
+      <form [formGroup]="form">
+        <select formControlName="player" class="custom-select">
+          <option *ngFor="let player of players" [value]="player"> {{ player }}</option>
+        </select>
+      </form>
+    </div>
+    <div class="col-9">
+      <canvas
+        baseChart
+        [chartType]="'pie'"
+        [legend]="true"
+        [data]="chartData"
+        [labels]="chartLabels"
+        [options]="chartOptions"
+        [colors]="chartColors"
+
+        (chartHover)="onChartHover(($event))"
+        (chartClick)="onChartClick(($event))"
+      >
+      </canvas>
+    </div>
+  </div>
+</div>
