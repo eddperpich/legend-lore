@@ -31,7 +31,7 @@ export class AppComponent {
     // }
   ];
 
-  chartLabels = [
+  chartLabels: string[] = [
     'Radiant',
     'Slashing',
     'Necrotic'
@@ -47,18 +47,18 @@ export class AppComponent {
     responsive: true
   };
 
-  onChartHover = ($event: any) => {
-    window.console.log('onChartHover', $event);
-  };
-
-  onChartClick = ($event: any) => {
-    window.console.log('onChartClick', $event);
-  };
-
   public chartColors: Array < any > = [{
     backgroundColor: ['rgba(218,165,32,.8)',
     'rgba(169,169,169,.8)',
     'rgba(46,139,87,.8)'
   ]
- }]; 
+ }];
+
+  onChartHover = ($event: any) => {
+    window.console.log('onChartHover', $event);
+  }
+
+  onChartClick = ($event: any) => {
+    window.console.log('onChartClick', $event);
+  }
 }
