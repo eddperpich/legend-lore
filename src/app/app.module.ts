@@ -5,16 +5,20 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { ChartsModule } from 'ng2-charts';
+import {ReactiveFormsModule} from '@angular/forms';
+import { DamagePieComponent } from './damage-pie/damage-pie.component';
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    DamagePieComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     NgbModule,
-    ChartsModule
+    ChartsModule,
+    ReactiveFormsModule
   ],
   providers: [],
   bootstrap: [AppComponent]

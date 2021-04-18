@@ -1,20 +1,5 @@
 <div>
-  <canvas
-    baseChart
-    [chartType]="'pie'"
-    [legend]="true"
-    [datasets]="chartData"
-    [labels]="chartLabels"
-    [options]="chartOptions"
-    [colors]="chartColors"
-
-    (chartHover)="onChartHover(($event))"
-    (chartClick)="addDataPoint([1], 'POWER')"
-  >
-  </canvas>
-
-  <button (click)="addDataPoint([1], 'POWER')">
-    Add a 1
-  </button>
-
+  <h1 class="text-center display-4">WELCOME TO THE LEGEND-LORE</h1>
+  <h4 class="text-center font-italic">"Taylor Cum" - Taylor</h4>
+  <app-damage-pie></app-damage-pie>
 </div>
