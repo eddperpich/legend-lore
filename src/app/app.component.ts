@@ -10,38 +10,20 @@ export class AppComponent {
 
   chartData = [
     {
-      data: [58, 10, 18, 0, 0, 0, 0, 0, 0],
-      label: 'Calais'
+      data: [58, 10, 18],
+      label: 'Ilirie'
     }
-    // {
-    //   data: [0, 0, 0, 22, 26, 7, 16, 0, 0],
-    //   label: 'Ilirie'
-    // },
-    // {
-    //   data: [0, 0, 0, 24, 0, 0, 0, 10, 42],
-    //   label: 'Kemvari'
-    // },
-    // {
-    //   data: [33, 4, 0, 0, 0, 0, 0, 0, 4],
-    //   label: 'Ojjun'
-    // },
-    // {
-    //   data: [0, 0, 22, 5, 0, 0, 0, 25, 0],
-    //   label: 'Viktor'
-    // }
   ];
 
   chartLabels = [
     'Radiant',
     'Slashing',
     'Necrotic'
-    // 'Fire',
-    // 'Psychic',
-    // 'Cold',
-    // 'Poison',
-    // 'Force',
-    // 'Bludgeoning'
   ];
+  
+  public chartColors: Array < any > = [{
+    backgroundColor: ['rgba(218,165,32,.8)', 'rgba(169,169,169,.8)', 'rgba(46,139,87,.8)']
+  }];
 
   chartOptions = {
     responsive: true
@@ -55,10 +37,13 @@ export class AppComponent {
     window.console.log('onChartClick', $event);
   };
 
-  public chartColors: Array < any > = [{
-    backgroundColor: ['rgba(218,165,32,.8)',
-    'rgba(169,169,169,.8)',
-    'rgba(46,139,87,.8)'
-  ]
- }]; 
+  addDataPoint(dataArr = (1), label) {
+    this.chartData.forEach((dataset, index) => {
+      this.chartData[index] = Object.assign({}, this.chartData[index], {
+        data: [...this.chartData[index].data, dataArr[index]]
+      });
+    });
+
+    this.chartLabels = [...this.chartLabels, label];
+  };
 }

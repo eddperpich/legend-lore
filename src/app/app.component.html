@@ -9,7 +9,12 @@
     [colors]="chartColors"
 
     (chartHover)="onChartHover(($event))"
-    (chartClick)="onChartClick(($event))"
+    (chartClick)="addDataPoint([1], 'POWER')"
   >
   </canvas>
+
+  <button (click)="addDataPoint([1], 'POWER')">
+    Add a 1
+  </button>
+
 </div>
