@@ -1,14 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup} from '@angular/forms';
 import {Color, SingleDataSet} from 'ng2-charts';
-
-
-interface EventData {
-  damage: number;
-  dType: 'BLUDGEONING' | 'COLD' | 'FIRE' | 'FORCE' | 'NECROTIC' | 'POISON' | 'PSYCHIC' | 'RADIANT' | 'SLASHING';
-  spell: string;
-  player: string;
-}
+import {DataFile, EventData} from '../../assets/data';
 
 @Component({
   selector: 'app-damage-pie',
@@ -16,6 +9,7 @@ interface EventData {
   styleUrls: ['./damage-pie.component.css']
 })
 export class DamagePieComponent implements OnInit {
+  private filters: ((s: EventData) => boolean)[];
 
   constructor(private fb: FormBuilder) {
   }
@@ -31,279 +25,7 @@ export class DamagePieComponent implements OnInit {
   title = 'legend-lore';
   form: FormGroup;
 
-  public primaryFilter: string;
-  public secondaryFilter: string;
-
-  rawData: EventData[] = [
-    // CALAIS -----------------------------------------------
-    {
-      damage: 8,
-      dType: 'FIRE',
-      spell: 'FIREBOLT',
-      player: 'CALAIS'
-    },
-    {
-      damage: 5,
-      dType: 'PSYCHIC',
-      spell: 'MIND SLIVER',
-      player: 'CALAIS'
-    },
-    {
-      damage: 7,
-      dType: 'PSYCHIC',
-      spell: 'TASHAS MIND WHIP',
-      player: 'CALAIS'
-    },
-    {
-      damage: 10,
-      dType: 'FIRE',
-      spell: 'FIREBOLT',
-      player: 'CALAIS'
-    },
-    {
-      damage: 10,
-      dType: 'PSYCHIC',
-      spell: 'SHADOW BLADE',
-      player: 'CALAIS'
-    },
-    {
-      damage: 7,
-      dType: 'COLD',
-      spell: 'RAY OF FROST',
-      player: 'CALAIS'
-    },
-    {
-      damage: 4,
-      dType: 'PSYCHIC',
-      spell: 'TASHAS MIND WHIP',
-      player: 'CALAIS'
-    },
-    {
-      damage: 4,
-      dType: 'FIRE',
-      spell: 'FIREBOLT',
-      player: 'CALAIS'
-    },
-    {
-      damage: 16,
-      dType: 'POISON',
-      spell: 'CHAOS BOLT',
-      player: 'CALAIS'
-    },
-    // ILIRIE -----------------------------------------------
-    {
-      damage: 17,
-      dType: 'RADIANT',
-      spell: 'MOONBEAM',
-      player: 'ILIRIE'
-    },
-    {
-      damage: 12,
-      dType: 'RADIANT',
-      spell: 'MOONBEAM',
-      player: 'ILIRIE'
-    },
-    {
-      damage: 8,
-      dType: 'RADIANT',
-      spell: 'MOONBEAM',
-      player: 'ILIRIE'
-    },
-    {
-      damage: 2,
-      dType: 'RADIANT',
-      spell: 'MOONBEAM',
-      player: 'ILIRIE'
-    },
-    {
-      damage: 6,
-      dType: 'SLASHING',
-      spell: 'LONGSWORD',
-      player: 'ILIRIE'
-    },
-    {
-      damage: 6,
-      dType: 'RADIANT',
-      spell: 'MOONBEAM',
-      player: 'ILIRIE'
-    },
-    {
-      damage: 4,
-      dType: 'SLASHING',
-      spell: 'LONGSWORD',
-      player: 'ILIRIE'
-    },
-    {
-      damage: 7,
-      dType: 'NECROTIC',
-      spell: 'TOLL THE DEAD',
-      player: 'ILIRIE'
-    },
-    {
-      damage: 13,
-      dType: 'RADIANT',
-      spell: 'GUIDING BOLT',
-      player: 'ILIRIE'
-    },
-    {
-      damage: 11,
-      dType: 'NECROTIC',
-      spell: 'TOLL THE DEAD',
-      player: 'ILIRIE'
-    },
-    // KEMVARI -----------------------------------------------
-    {
-      damage: 4,
-      dType: 'FORCE',
-      spell: 'ELDRITCH CANNON',
-      player: 'KEMVARI'
-    },
-    {
-      damage: 6,
-      dType: 'FORCE',
-      spell: 'ELDRITCH CANNON',
-      player: 'KEMVARI'
-    },
-    {
-      damage: 6,
-      dType: 'FIRE',
-      spell: 'CREATE BONFIRE',
-      player: 'KEMVARI'
-    },
-    {
-      damage: 3,
-      dType: 'FIRE',
-      spell: 'CREATE BONFIRE',
-      player: 'KEMVARI'
-    },
-    {
-      damage: 3,
-      dType: 'FIRE',
-      spell: 'CREATE BONFIRE',
-      player: 'KEMVARI'
-    },
-    {
-      damage: 6,
-      dType: 'FIRE',
-      spell: 'ELDRITCH CANNON',
-      player: 'KEMVARI'
-    },
-    {
-      damage: 6,
-      dType: 'FIRE',
-      spell: 'CREATE BONFIRE',
-      player: 'KEMVARI'
-    },
-    {
-      damage: 8,
-      dType: 'BLUDGEONING',
-      spell: 'MAGIC STONE',
-      player: 'KEMVARI'
-    },
-    {
-      damage: 14,
-      dType: 'BLUDGEONING',
-      spell: 'CATAPULT',
-      player: 'KEMVARI'
-    },
-    {
-      damage: 7,
-      dType: 'BLUDGEONING',
-      spell: 'MAGIC STONE',
-      player: 'KEMVARI'
-    },
-    {
-      damage: 4,
-      dType: 'BLUDGEONING',
-      spell: 'MAGIC STONE',
-      player: 'KEMVARI'
-    },
-    {
-      damage: 5,
-      dType: 'BLUDGEONING',
-      spell: 'MAGIC STONE',
-      player: 'KEMVARI'
-    },
-    {
-      damage: 4,
-      dType: 'BLUDGEONING',
-      spell: 'MAGIC STONE',
-      player: 'KEMVARI'
-    },
-    // VIKTOR -----------------------------------------------
-    {
-      damage: 2,
-      dType: 'FORCE',
-      spell: 'MAGIC MISSILE',
-      player: 'VIKTOR'
-    },
-    {
-      damage: 5,
-      dType: 'FORCE',
-      spell: 'MAGIC MISSILE',
-      player: 'VIKTOR'
-    },
-    {
-      damage: 5,
-      dType: 'FORCE',
-      spell: 'MAGIC MISSILE',
-      player: 'VIKTOR'
-    },
-    {
-      damage: 3,
-      dType: 'FORCE',
-      spell: 'MAGIC MISSILE',
-      player: 'VIKTOR'
-    },
-    {
-      damage: 5,
-      dType: 'FORCE',
-      spell: 'MAGIC MISSILE',
-      player: 'VIKTOR'
-    },
-    {
-      damage: 5,
-      dType: 'FORCE',
-      spell: 'MAGIC MISSILE',
-      player: 'VIKTOR'
-    },
-    {
-      damage: 3,
-      dType: 'NECROTIC',
-      spell: 'CHILL TOUCH',
-      player: 'VIKTOR'
-    },
-    {
-      damage: 7,
-      dType: 'NECROTIC',
-      spell: 'CHILL TOUCH',
-      player: 'VIKTOR'
-    },
-    {
-      damage: 5,
-      dType: 'FIRE',
-      spell: 'DRAGONS BREATH',
-      player: 'VIKTOR'
-    },
-    {
-      damage: 4,
-      dType: 'NECROTIC',
-      spell: 'CHILL TOUCH',
-      player: 'VIKTOR'
-    },
-    {
-      damage: 1,
-      dType: 'NECROTIC',
-      spell: 'CHILL TOUCH',
-      player: 'VIKTOR'
-    },
-    {
-      damage: 7,
-      dType: 'NECROTIC',
-      spell: 'CHILL TOUCH',
-      player: 'VIKTOR'
-    }
-  ];
+  rawData: EventData[] = DataFile.set1;
 
   public colorCodes = {
     BLUDGEONING: 'rgba(112,128,144,.8)',
@@ -320,14 +42,15 @@ export class DamagePieComponent implements OnInit {
   ngOnInit(): void {
     this.form = this.fb.group(
       {
-        player: 'CALAIS'
+        player: 'CALAIS',
+        grouping: 'dType'
       }
     );
     this.render();
     this.form.valueChanges.subscribe(
       () => {
-        this.primaryFilter = undefined, this.secondaryFilter=undefined,
-        this.render()
+        this.filters = undefined;
+        this.render();
       }
     );
 
@@ -340,14 +63,14 @@ export class DamagePieComponent implements OnInit {
     // window.console.log('onChartHover', $event);
   };
 
-  onChartClick(e:any):void {
-    if (e.active.length> 0){
-      if (this.primaryFilter != 'spell') {
-        this.primaryFilter = 'spell';
-        this.secondaryFilter = e.active[0]._chart.config.data.labels[e.active[0]._index];
+  onChartClick(e: any): void {
+    if (e.active.length > 0) {
+      if (this.groupingSelection !== 'spell') {
+        this.groupingSelection = 'spell';
+        this.filters = [...this.filters, this.damageTypeFilter(e.active[0]._chart.config.data.labels[e.active[0]._index])];
       } else {
-        this.primaryFilter = undefined
-        this.secondaryFilter = undefined
+        this.groupingSelection = 'dType';
+        this.filters = undefined;
       }
       this.render();
 
@@ -367,16 +90,30 @@ export class DamagePieComponent implements OnInit {
     return [...new Set(this.rawData.map(item => item.dType))];
   }
 
-  aggregate(pFilter: string = "dType", sFilter: string=""): { [p: string]: number } {
-    const dict: { [p: string]: number } = this.rawData
-      .filter(item => item.player === this.form.get('player').value)
-      .filter(item => sFilter != "" ? item.dType === sFilter : 1)
-      .reduce((base, value) => ({...base, [value[pFilter]]: (base[value[pFilter]] || 0) + value.damage}), {});
-    return dict;
+  get groupingSelection(): string {
+    return this.form?.get('grouping').value;
+  }
+
+  set groupingSelection(input: string) {
+    this.form?.get('grouping').patchValue(input);
+  }
+
+  aggregate(dataGrouping: string = 'dType', filters: ((s: EventData) => boolean)[]): { [p: string]: number } {
+    return this.rawData
+      .filter(item => filters.every(a => a(item)))
+      .reduce((base, value) => ({...base, [value[dataGrouping]]: (base[value[dataGrouping]] || 0) + value.damage}), {});
+  }
+
+  damageTypeFilter(dType: string): (s: EventData) => boolean {
+    return (item) => item.dType === dType;
+  }
+
+  playerFilter(): (s: EventData) => boolean {
+    return item => item.player === this.form.get('player').value;
   }
 
   render(): void {
-    const damages = this.aggregate(this.primaryFilter, this.secondaryFilter);
+    const damages = this.aggregate(this.groupingSelection, this.filters?.length ? this.filters : [this.playerFilter()]);
 
     [this.chartLabels, this.chartData, this.chartColors] = Object.entries(damages).reduce((v1, v2) => [
         [...v1[0], v2[0]],

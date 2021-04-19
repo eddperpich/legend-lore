@@ -5,6 +5,10 @@
         <select formControlName="player" class="custom-select">
           <option *ngFor="let player of players" [value]="player"> {{ player }}</option>
         </select>
+        <select formControlName="grouping" class="custom-select">
+          <option [value]="'dType'"> Damage Type </option>
+          <option [value]="'spell'"> Spell </option>
+        </select>
       </form>
     </div>
     <div class="col-9">
