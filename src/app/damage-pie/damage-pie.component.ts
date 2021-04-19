@@ -35,6 +35,7 @@ export class DamagePieComponent implements OnInit {
   public secondaryFilter: string;
 
   rawData: EventData[] = [
+    // CALAIS -----------------------------------------------
     {
       damage: 8,
       dType: 'FIRE',
@@ -89,6 +90,7 @@ export class DamagePieComponent implements OnInit {
       spell: 'CHAOS BOLT',
       player: 'CALAIS'
     },
+    // ILIRIE -----------------------------------------------
     {
       damage: 17,
       dType: 'RADIANT',
@@ -149,6 +151,158 @@ export class DamagePieComponent implements OnInit {
       spell: 'TOLL THE DEAD',
       player: 'ILIRIE'
     },
+    // KEMVARI -----------------------------------------------
+    {
+      damage: 4,
+      dType: 'FORCE',
+      spell: 'ELDRITCH CANNON',
+      player: 'KEMVARI'
+    },
+    {
+      damage: 6,
+      dType: 'FORCE',
+      spell: 'ELDRITCH CANNON',
+      player: 'KEMVARI'
+    },
+    {
+      damage: 6,
+      dType: 'FIRE',
+      spell: 'CREATE BONFIRE',
+      player: 'KEMVARI'
+    },
+    {
+      damage: 3,
+      dType: 'FIRE',
+      spell: 'CREATE BONFIRE',
+      player: 'KEMVARI'
+    },
+    {
+      damage: 3,
+      dType: 'FIRE',
+      spell: 'CREATE BONFIRE',
+      player: 'KEMVARI'
+    },
+    {
+      damage: 6,
+      dType: 'FIRE',
+      spell: 'ELDRITCH CANNON',
+      player: 'KEMVARI'
+    },
+    {
+      damage: 6,
+      dType: 'FIRE',
+      spell: 'CREATE BONFIRE',
+      player: 'KEMVARI'
+    },
+    {
+      damage: 8,
+      dType: 'BLUDGEONING',
+      spell: 'MAGIC STONE',
+      player: 'KEMVARI'
+    },
+    {
+      damage: 14,
+      dType: 'BLUDGEONING',
+      spell: 'CATAPULT',
+      player: 'KEMVARI'
+    },
+    {
+      damage: 7,
+      dType: 'BLUDGEONING',
+      spell: 'MAGIC STONE',
+      player: 'KEMVARI'
+    },
+    {
+      damage: 4,
+      dType: 'BLUDGEONING',
+      spell: 'MAGIC STONE',
+      player: 'KEMVARI'
+    },
+    {
+      damage: 5,
+      dType: 'BLUDGEONING',
+      spell: 'MAGIC STONE',
+      player: 'KEMVARI'
+    },
+    {
+      damage: 4,
+      dType: 'BLUDGEONING',
+      spell: 'MAGIC STONE',
+      player: 'KEMVARI'
+    },
+    // VIKTOR -----------------------------------------------
+    {
+      damage: 2,
+      dType: 'FORCE',
+      spell: 'MAGIC MISSILE',
+      player: 'VIKTOR'
+    },
+    {
+      damage: 5,
+      dType: 'FORCE',
+      spell: 'MAGIC MISSILE',
+      player: 'VIKTOR'
+    },
+    {
+      damage: 5,
+      dType: 'FORCE',
+      spell: 'MAGIC MISSILE',
+      player: 'VIKTOR'
+    },
+    {
+      damage: 3,
+      dType: 'FORCE',
+      spell: 'MAGIC MISSILE',
+      player: 'VIKTOR'
+    },
+    {
+      damage: 5,
+      dType: 'FORCE',
+      spell: 'MAGIC MISSILE',
+      player: 'VIKTOR'
+    },
+    {
+      damage: 5,
+      dType: 'FORCE',
+      spell: 'MAGIC MISSILE',
+      player: 'VIKTOR'
+    },
+    {
+      damage: 3,
+      dType: 'NECROTIC',
+      spell: 'CHILL TOUCH',
+      player: 'VIKTOR'
+    },
+    {
+      damage: 7,
+      dType: 'NECROTIC',
+      spell: 'CHILL TOUCH',
+      player: 'VIKTOR'
+    },
+    {
+      damage: 5,
+      dType: 'FIRE',
+      spell: 'DRAGONS BREATH',
+      player: 'VIKTOR'
+    },
+    {
+      damage: 4,
+      dType: 'NECROTIC',
+      spell: 'CHILL TOUCH',
+      player: 'VIKTOR'
+    },
+    {
+      damage: 1,
+      dType: 'NECROTIC',
+      spell: 'CHILL TOUCH',
+      player: 'VIKTOR'
+    },
+    {
+      damage: 7,
+      dType: 'NECROTIC',
+      spell: 'CHILL TOUCH',
+      player: 'VIKTOR'
+    }
   ];
 
   public colorCodes = {
