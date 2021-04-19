@@ -5,7 +5,8 @@ import {Color, SingleDataSet} from 'ng2-charts';
 
 interface EventData {
   damage: number;
-  dType: 'NECROTIC' | 'RADIANT' | 'COLD' | 'FIRE';
+  dType: 'BLUDGEONING' | 'COLD' | 'FIRE' | 'FORCE' | 'NECROTIC' | 'POISON' | 'PSYCHIC' | 'RADIANT' | 'SLASHING';
+  spell: string;
   player: string;
 }
 
@@ -29,50 +30,131 @@ export class DamagePieComponent implements OnInit {
 
   rawData: EventData[] = [
     {
-      damage: 3,
+      damage: 8,
+      dType: 'FIRE',
+      spell: 'FIREBOLT',
+      player: 'CALAIS'
+    },
+    {
+      damage: 5,
+      dType: 'PSYCHIC',
+      spell: 'MIND SLIVER',
+      player: 'CALAIS'
+    },
+    {
+      damage: 7,
+      dType: 'PSYCHIC',
+      spell: 'TASHAS MIND WHIP',
+      player: 'CALAIS'
+    },
+    {
+      damage: 10,
+      dType: 'FIRE',
+      spell: 'FIREBOLT',
+      player: 'CALAIS'
+    },
+    {
+      damage: 10,
+      dType: 'PSYCHIC',
+      spell: 'SHADOW BLADE',
+      player: 'CALAIS'
+    },
+    {
+      damage: 7,
+      dType: 'COLD',
+      spell: 'RAY OF FROST',
+      player: 'CALAIS'
+    },
+    {
+      damage: 4,
+      dType: 'PSYCHIC',
+      spell: 'TASHAS MIND WHIP',
+      player: 'CALAIS'
+    },
+    {
+      damage: 4,
+      dType: 'FIRE',
+      spell: 'FIREBOLT',
+      player: 'CALAIS'
+    },
+    {
+      damage: 16,
+      dType: 'POISON',
+      spell: 'CHAOS BOLT',
+      player: 'CALAIS'
+    },
+    {
+      damage: 17,
       dType: 'RADIANT',
+      spell: 'MOONBEAM',
+      player: 'ILIRIE'
+    },
+    {
+      damage: 12,
+      dType: 'RADIANT',
+      spell: 'MOONBEAM',
+      player: 'ILIRIE'
+    },
+    {
+      damage: 8,
+      dType: 'RADIANT',
+      spell: 'MOONBEAM',
+      player: 'ILIRIE'
+    },
+    {
+      damage: 2,
+      dType: 'RADIANT',
+      spell: 'MOONBEAM',
       player: 'ILIRIE'
     },
     {
       damage: 6,
-      dType: 'NECROTIC',
-      player: 'AUSTIN'
+      dType: 'SLASHING',
+      spell: 'LONGSWORD',
+      player: 'ILIRIE'
     },
     {
-      damage: 12,
-      dType: 'NECROTIC',
-      player: 'TAYLOR'
-    },
-    {
-      damage: 12,
-      dType: 'NECROTIC',
-      player: 'TAYLOR'
-    },
-    {
-      damage: 12,
-      dType: 'COLD',
-      player: 'TAYLOR'
-    },
-    {
-      damage: 12,
+      damage: 6,
       dType: 'RADIANT',
-      player: 'TAYLOR'
+      spell: 'MOONBEAM',
+      player: 'ILIRIE'
     },
     {
-      damage: 12,
+      damage: 4,
+      dType: 'SLASHING',
+      spell: 'LONGSWORD',
+      player: 'ILIRIE'
+    },
+    {
+      damage: 7,
       dType: 'NECROTIC',
-      player: 'TAYLOR'
-    }
+      spell: 'TOLL THE DEAD',
+      player: 'ILIRIE'
+    },
+    {
+      damage: 13,
+      dType: 'RADIANT',
+      spell: 'GUIDING BOLT',
+      player: 'ILIRIE'
+    },
+    {
+      damage: 11,
+      dType: 'NECROTIC',
+      spell: 'TOLL THE DEAD',
+      player: 'ILIRIE'
+    },
   ];
 
-  // public chartColors: Array<any> = [{
-  //   backgroundColor: ['rgba(218,165,32,.8)', 'rgba(169,169,169,.8)', 'rgba(46,139,87,.8)']
-  // }];
-
   public colorCodes = {
+    BLUDGEONING: 'rgba(112,128,144,.8)',
+    COLD: 'rgba(65,105,225,.8)',
+    FIRE: 'rgba(128,0,0,.8)',
+    FORCE: 'rgba(245,245,245,.8)',
     NECROTIC: 'rgba(46,139,87,.8)',
-    COLD: 'rgba(169,169,169,.8)',
-    RADIANT: 'rgba(218,165,32,.8)'
+    POISON: 'rgba(72,61,139,.8)',
+    PSYCHIC: 'rgba(218,112,214,.8)',
+    RADIANT: 'rgba(218,165,32,.8)',
+    SLASHING: 'rgba(105,105,105,.8)'
   };
 
   chartOptions = {
@@ -82,7 +164,7 @@ export class DamagePieComponent implements OnInit {
   ngOnInit(): void {
     this.form = this.fb.group(
       {
-        player: 'TAYLOR'
+        player: 'CALAIS'
       }
     );
     this.render();
@@ -100,9 +182,13 @@ export class DamagePieComponent implements OnInit {
     // window.console.log('onChartHover', $event);
   };
 
-  onChartClick = ($event: any) => {
-    // window.console.log('onChartClick', $event);
-  };
+  onChartClick(e:any):void {
+    if (e.active.length> 0){
+      console.log("Index" , e.active[0]._index);
+      console.log("Data" , e.active[0]._chart.config.data.datasets[0].data[e.active[0]._index]);
+      console.log("Label" , e.active[0]._chart.config.data.labels[e.active[0]._index]);
+    }
+  }
 
   get players(): string[] {
     return [...new Set(this.rawData.map(item => item.player))];
@@ -110,6 +196,10 @@ export class DamagePieComponent implements OnInit {
 
   get damageType(): string[] {
     return [...new Set(this.rawData.map(item => item.dType))];
+  }
+
+  aggregate(): void {
+
   }
 
   render(): void {
@@ -124,7 +214,13 @@ export class DamagePieComponent implements OnInit {
         [{backgroundColor: [...v1[2][0]?.backgroundColor || [], this.colorCodes[v2[0]]]}]
       ],
       [[], [], []]
-    ); // reduce into a [[]] array
-    console.log(this.chartColors);
+    );
+    console.log(damages);
   }
+
+  mutate(): void {
+
+  }
+
+
 }
