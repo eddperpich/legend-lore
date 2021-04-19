@@ -6,7 +6,7 @@ import { AppComponent } from './app.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { ChartsModule } from 'ng2-charts';
 import {ReactiveFormsModule} from '@angular/forms';
-import { DamagePieComponent } from './damage-pie/damage-pie.component';
+import {DamagePieComponent} from './damage-pie/damage-pie.component';
 
 @NgModule({
   declarations: [

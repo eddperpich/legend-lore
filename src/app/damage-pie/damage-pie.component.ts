@@ -5,7 +5,7 @@ import {Color, SingleDataSet} from 'ng2-charts';
 
 interface EventData {
   damage: number;
-  dType: 'NECROTIC'| 'RADIANT' | 'COLD' | 'FIRE';
+  dType: 'NECROTIC' | 'RADIANT' | 'COLD' | 'FIRE';
   player: string;
 }
 
@@ -68,11 +68,11 @@ export class DamagePieComponent implements OnInit {
   // public chartColors: Array<any> = [{
   //   backgroundColor: ['rgba(218,165,32,.8)', 'rgba(169,169,169,.8)', 'rgba(46,139,87,.8)']
   // }];
-  
+
   public colorCodes = {
-      'NECROTIC': 'rgba(218,165,32,.8)',
-      'COLD': 'rgba(169,169,169,.8)',
-      'RADIANT': 'rgba(46,139,87,.8)'
+    NECROTIC: 'rgba(218,165,32,.8)',
+    COLD: 'rgba(169,169,169,.8)',
+    RADIANT: 'rgba(46,139,87,.8)'
   };
 
   chartOptions = {
@@ -97,11 +97,11 @@ export class DamagePieComponent implements OnInit {
   }
 
   onChartHover = ($event: any) => {
-    window.console.log('onChartHover', $event);
-  };
+    // window.console.log('onChartHover', $event);
+  }
 
   onChartClick = ($event: any) => {
-    window.console.log('onChartClick', $event);
+    // window.console.log('onChartClick', $event);
   }
 
   get players(): string[] {
@@ -122,6 +122,6 @@ export class DamagePieComponent implements OnInit {
         [...v1[2], {backgroundColor: this.colorCodes[v2[0]]}]
       ],
       [[], [], []]
-    ); //reduce into a [[]] array
+    ); // reduce into a [[]] array
   }
 }
