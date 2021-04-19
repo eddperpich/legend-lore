@@ -1,11 +1,11 @@
 import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup} from '@angular/forms';
-import {SingleDataSet} from 'ng2-charts';
+import {Color, SingleDataSet} from 'ng2-charts';
 
 
 interface EventData {
   damage: number;
-  dType: 'NECROTIC'| 'RADIANT' | 'COLD' | 'FIRE';
+  dType: 'NECROTIC' | 'RADIANT' | 'COLD' | 'FIRE';
   player: string;
 }
 
@@ -21,7 +21,7 @@ export class DamagePieComponent implements OnInit {
 
   chartLabels: string[] = [];
   chartData: SingleDataSet[] = [];
-  chartColors: Array<any> = [{backgroundColors: []}];
+  chartColors: Color[] = [];
 
   title = 'legend-lore';
   form: FormGroup;
@@ -68,11 +68,11 @@ export class DamagePieComponent implements OnInit {
   // public chartColors: Array<any> = [{
   //   backgroundColor: ['rgba(218,165,32,.8)', 'rgba(169,169,169,.8)', 'rgba(46,139,87,.8)']
   // }];
-  
+
   public colorCodes = {
-      'NECROTIC': 'rgba(218,165,32,.8)',
-      'COLD': 'rgba(169,169,169,.8)',
-      'RADIANT': 'rgba(46,139,87,.8)'
+    NECROTIC: 'rgba(218,165,32,.8)',
+    COLD: 'rgba(169,169,169,.8)',
+    RADIANT: 'rgba(46,139,87,.8)'
   };
 
   chartOptions = {
@@ -97,11 +97,11 @@ export class DamagePieComponent implements OnInit {
   }
 
   onChartHover = ($event: any) => {
-    window.console.log('onChartHover', $event);
-  };
+    // window.console.log('onChartHover', $event);
+  }
 
   onChartClick = ($event: any) => {
-    window.console.log('onChartClick', $event);
+    // window.console.log('onChartClick', $event);
   }
 
   get players(): string[] {
@@ -117,10 +117,12 @@ export class DamagePieComponent implements OnInit {
       .filter(item => item.player === this.form.get('player').value) // filter, checking each object.player of rawdata = the selected form player
       .reduce((base, value) => ({...base, [value.dType]: (base[value.dType] || 0) + value.damage}), {}); // reduce into key:value pair of damage of dType or 0 + current value damage
     [this.chartLabels, this.chartData, this.chartColors] = Object.entries(damages).reduce((v1, v2) => [
-      [...v1[0], v2[0]],
-      [...v1[1], v2[1]],
-      [...v1[2], this.colorCodes[v2[0]]]],
+        [...v1[0], v2[0]],
+        [...v1[1], v2[1]],
+        [...v1[2], {backgroundColor: this.colorCodes[v2[0]]}]
+      ],
       [[], [], []]
-      ); //reduce into a [[]] array
+    ); // reduce into a [[]] array
+    console.log(this.chartColors);
   }
 }
