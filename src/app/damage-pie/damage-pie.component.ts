@@ -24,9 +24,15 @@ export class DamagePieComponent implements OnInit {
   chartData: SingleDataSet[] = [];
   chartColors: Color[] = [];
 
+  chartOptions = {
+    responsive: true
+  };
+
   title = 'legend-lore';
   form: FormGroup;
 
+  public primaryFilter: string;
+  public secondaryFilter: string;
 
   rawData: EventData[] = [
     {
@@ -157,10 +163,6 @@ export class DamagePieComponent implements OnInit {
     SLASHING: 'rgba(105,105,105,.8)'
   };
 
-  chartOptions = {
-    responsive: true
-  };
-
   ngOnInit(): void {
     this.form = this.fb.group(
       {
@@ -169,8 +171,10 @@ export class DamagePieComponent implements OnInit {
     );
     this.render();
     this.form.valueChanges.subscribe(
-      () =>
+      () => {
+        this.primaryFilter = undefined, this.secondaryFilter=undefined,
         this.render()
+      }
     );
 
     // .reduce((v1, v2) => [[...v1[0], v2.damage], [...v1[1], v2.dType]], [[], []]);
@@ -184,10 +188,20 @@ export class DamagePieComponent implements OnInit {
 
   onChartClick(e:any):void {
     if (e.active.length> 0){
-      console.log("Index" , e.active[0]._index);
-      console.log("Data" , e.active[0]._chart.config.data.datasets[0].data[e.active[0]._index]);
-      console.log("Label" , e.active[0]._chart.config.data.labels[e.active[0]._index]);
+      if (this.primaryFilter != 'spell') {
+        this.primaryFilter = 'spell';
+        this.secondaryFilter = e.active[0]._chart.config.data.labels[e.active[0]._index];
+      } else {
+        this.primaryFilter = undefined
+        this.secondaryFilter = undefined
+      }
+      this.render();
+
+      // documentation because imagine reading docs
       // this.chartData = [[100, 50, 60]]; add filter by damage type LABEL
+      // console.log("Index" , e.active[0]._index);
+      // console.log("Data" , e.active[0]._chart.config.data.datasets[0].data[e.active[0]._index]);
+      // console.log("Label" , e.active[0]._chart.config.data.labels[e.active[0]._index]);
     }
   }
 
@@ -199,21 +213,16 @@ export class DamagePieComponent implements OnInit {
     return [...new Set(this.rawData.map(item => item.dType))];
   }
 
-  aggregate(): void {
-    const damages: { [p: string]: number } = this.rawData // create damages, a [p: string]:num array from rawData
-      // filter, checking each object.player of rawdata = the selected form player
+  aggregate(pFilter: string = "dType", sFilter: string=""): { [p: string]: number } {
+    const dict: { [p: string]: number } = this.rawData
       .filter(item => item.player === this.form.get('player').value)
-      // reduce into key:value pair of damage of dType or 0 + current value damage
-      .reduce((base, value) => ({...base, [value.dType]: (base[value.dType] || 0) + value.damage}), {});
+      .filter(item => sFilter != "" ? item.dType === sFilter : 1)
+      .reduce((base, value) => ({...base, [value[pFilter]]: (base[value[pFilter]] || 0) + value.damage}), {});
+    return dict;
   }
 
   render(): void {
-    const damages: { [p: string]: number } = this.rawData // create damages, a [p: string]:num array from rawData
-      // filter, checking each object.player of rawdata = the selected form player
-      .filter(item => item.player === this.form.get('player').value)
-      // .filter(item => item.dType === "FIRE")
-      // reduce into key:value pair of damage of dType or 0 + current value damage
-      .reduce((base, value) => ({...base, [value.dType]: (base[value.dType] || 0) + value.damage}), {});
+    const damages = this.aggregate(this.primaryFilter, this.secondaryFilter);
 
     [this.chartLabels, this.chartData, this.chartColors] = Object.entries(damages).reduce((v1, v2) => [
         [...v1[0], v2[0]],
@@ -222,6 +231,5 @@ export class DamagePieComponent implements OnInit {
       ],
       [[], [], []]
     );
-    console.log(damages);
   }
 }
