@@ -187,6 +187,7 @@ export class DamagePieComponent implements OnInit {
       console.log("Index" , e.active[0]._index);
       console.log("Data" , e.active[0]._chart.config.data.datasets[0].data[e.active[0]._index]);
       console.log("Label" , e.active[0]._chart.config.data.labels[e.active[0]._index]);
+      // this.chartData = [[100, 50, 60]]; add filter by damage type LABEL
     }
   }
 
@@ -199,15 +200,21 @@ export class DamagePieComponent implements OnInit {
   }
 
   aggregate(): void {
-
+    const damages: { [p: string]: number } = this.rawData // create damages, a [p: string]:num array from rawData
+      // filter, checking each object.player of rawdata = the selected form player
+      .filter(item => item.player === this.form.get('player').value)
+      // reduce into key:value pair of damage of dType or 0 + current value damage
+      .reduce((base, value) => ({...base, [value.dType]: (base[value.dType] || 0) + value.damage}), {});
   }
 
   render(): void {
     const damages: { [p: string]: number } = this.rawData // create damages, a [p: string]:num array from rawData
       // filter, checking each object.player of rawdata = the selected form player
       .filter(item => item.player === this.form.get('player').value)
+      // .filter(item => item.dType === "FIRE")
       // reduce into key:value pair of damage of dType or 0 + current value damage
       .reduce((base, value) => ({...base, [value.dType]: (base[value.dType] || 0) + value.damage}), {});
+
     [this.chartLabels, this.chartData, this.chartColors] = Object.entries(damages).reduce((v1, v2) => [
         [...v1[0], v2[0]],
         [...v1[1], v2[1]],
@@ -217,10 +224,4 @@ export class DamagePieComponent implements OnInit {
     );
     console.log(damages);
   }
-
-  mutate(): void {
-
-  }
-
-
 }
