@@ -63,19 +63,11 @@ export class DamagePieComponent implements OnInit {
     // window.console.log('onChartHover', $event);
   };
 
-<<<<<<< Updated upstream
   onChartClick(e: any): void {
     if (e.active.length > 0) {
       if (this.groupingSelection !== 'spell') {
         this.groupingSelection = 'spell';
         this.filters = [...this.filters, this.damageTypeFilter(e.active[0]._chart.config.data.labels[e.active[0]._index])];
-=======
-  onChartClick(e:any):void {
-    if (e.active.length> 0){
-      if (this.primaryFilter !== 'spell') {
-        this.primaryFilter = 'spell';
-        this.secondaryFilter = e.active[0]._chart.config.data.labels[e.active[0]._index];
->>>>>>> Stashed changes
       } else {
         this.groupingSelection = 'dType';
         this.filters = undefined;
