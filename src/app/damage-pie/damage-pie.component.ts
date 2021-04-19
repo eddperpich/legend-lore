@@ -70,9 +70,9 @@ export class DamagePieComponent implements OnInit {
   // }];
 
   public colorCodes = {
-    NECROTIC: 'rgba(218,165,32,.8)',
+    NECROTIC: 'rgba(46,139,87,.8)',
     COLD: 'rgba(169,169,169,.8)',
-    RADIANT: 'rgba(46,139,87,.8)'
+    RADIANT: 'rgba(218,165,32,.8)'
   };
 
   chartOptions = {
@@ -123,5 +123,6 @@ export class DamagePieComponent implements OnInit {
       ],
       [[], [], []]
     ); // reduce into a [[]] array
+    console.log(this.chartColors);
   }
 }
