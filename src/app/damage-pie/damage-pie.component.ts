@@ -98,11 +98,11 @@ export class DamagePieComponent implements OnInit {
 
   onChartHover = ($event: any) => {
     // window.console.log('onChartHover', $event);
-  }
+  };
 
   onChartClick = ($event: any) => {
     // window.console.log('onChartClick', $event);
-  }
+  };
 
   get players(): string[] {
     return [...new Set(this.rawData.map(item => item.player))];
@@ -114,12 +114,14 @@ export class DamagePieComponent implements OnInit {
 
   render(): void {
     const damages: { [p: string]: number } = this.rawData // create damages, a [p: string]:num array from rawData
-      .filter(item => item.player === this.form.get('player').value) // filter, checking each object.player of rawdata = the selected form player
-      .reduce((base, value) => ({...base, [value.dType]: (base[value.dType] || 0) + value.damage}), {}); // reduce into key:value pair of damage of dType or 0 + current value damage
+      // filter, checking each object.player of rawdata = the selected form player
+      .filter(item => item.player === this.form.get('player').value)
+      // reduce into key:value pair of damage of dType or 0 + current value damage
+      .reduce((base, value) => ({...base, [value.dType]: (base[value.dType] || 0) + value.damage}), {});
     [this.chartLabels, this.chartData, this.chartColors] = Object.entries(damages).reduce((v1, v2) => [
         [...v1[0], v2[0]],
         [...v1[1], v2[1]],
-        [...v1[2], {backgroundColor: this.colorCodes[v2[0]]}]
+        [{backgroundColor: [...v1[2][0]?.backgroundColor || [], this.colorCodes[v2[0]]]}]
       ],
       [[], [], []]
     ); // reduce into a [[]] array
