@@ -119,7 +119,7 @@ export class DamagePieComponent implements OnInit {
     [this.chartLabels, this.chartData, this.chartColors] = Object.entries(damages).reduce((v1, v2) => [
         [...v1[0], v2[0]],
         [...v1[1], v2[1]],
-        [...v1[2], {backgroundColor: this.colorCodes[v2[0]]}
+        [...v1[2], {backgroundColor: this.colorCodes[v2[0]]}]
       ],
       [[], [], []]
     ); //reduce into a [[]] array
