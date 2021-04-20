@@ -28,16 +28,18 @@ export class DamagePieComponent implements OnInit {
   rawData: EventData[] = DataFile.set1;
 
   public colorCodes = {
-    BLUDGEONING: 'rgba(112,128,144,.8)',
-    COLD: 'rgba(65,105,225,.8)',
-    FIRE: 'rgba(128,0,0,.8)',
-    FORCE: 'rgba(245,245,245,.8)',
-    NECROTIC: 'rgba(46,139,87,.8)',
-    POISON: 'rgba(72,61,139,.8)',
-    PSYCHIC: 'rgba(218,112,214,.8)',
-    RADIANT: 'rgba(218,165,32,.8)',
-    SLASHING: 'rgba(105,105,105,.8)'
+    BLUDGEONING: 'rgba(112,128,144)',
+    COLD: 'rgba(65,105,225)',
+    FIRE: 'rgba(128,0,0)',
+    FORCE: 'rgba(245,245,245)',
+    NECROTIC: 'rgba(46,139,87)',
+    POISON: 'rgba(72,61,139)',
+    PSYCHIC: 'rgba(218,112,214)',
+    RADIANT: 'rgba(218,165,32)',
+    SLASHING: 'rgba(105,105,105)'
   };
+
+  //need to get type from data entry, if not then we default to a key value pair of all of these actions.
 
   ngOnInit(): void {
     this.form = this.fb.group(
@@ -98,12 +100,15 @@ export class DamagePieComponent implements OnInit {
     this.form?.get('grouping').patchValue(input);
   }
 
+<<<<<<< Updated upstream
   aggregate(dataGrouping: string = 'dType', filters: ((s: EventData) => boolean)[]): { [p: string]: number } {
     return this.rawData
       .filter(item => filters.every(a => a(item)))
       .reduce((base, value) => ({...base, [value[dataGrouping]]: (base[value[dataGrouping]] || 0) + value.damage}), {});
   }
 
+=======
+>>>>>>> Stashed changes
   damageTypeFilter(dType: string): (s: EventData) => boolean {
     return (item) => item.dType === dType;
   }
@@ -112,8 +117,20 @@ export class DamagePieComponent implements OnInit {
     return item => item.player === this.form.get('player').value;
   }
 
+  aggregate(dataGrouping: string = 'dType', filters: ((s: EventData) => boolean)[]): { [p: string]: number } {
+    const tempFilt = filters.concat(this.playerFilter());
+    return this.rawData
+      .filter(item => tempFilt.every(a => a(item)))
+      .reduce((base, value) => ({...base, [value[dataGrouping]]: (base[value[dataGrouping]] || 0) + value.damage}), {});
+  }
+
   render(): void {
+<<<<<<< Updated upstream
     const damages = this.aggregate(this.groupingSelection, this.filters?.length ? this.filters : [this.playerFilter()]);
+=======
+    const damages = this.aggregate(this.groupingSelection, this.filters);
+    console.log(damages);
+>>>>>>> Stashed changes
 
     [this.chartLabels, this.chartData, this.chartColors] = Object.entries(damages).reduce((v1, v2) => [
         [...v1[0], v2[0]],
