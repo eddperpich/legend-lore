@@ -9,7 +9,7 @@ import {DataFile, EventData} from '../../assets/data';
   styleUrls: ['./damage-pie.component.css']
 })
 export class DamagePieComponent implements OnInit {
-  private filters: ((s: EventData) => boolean)[];
+  private filters: ((s: EventData) => boolean)[] = [];
 
   constructor(private fb: FormBuilder) {
   }
@@ -39,8 +39,6 @@ export class DamagePieComponent implements OnInit {
     SLASHING: 'rgba(105,105,105)'
   };
 
-  //need to get type from data entry, if not then we default to a key value pair of all of these actions.
-
   ngOnInit(): void {
     this.form = this.fb.group(
       {
@@ -51,7 +49,7 @@ export class DamagePieComponent implements OnInit {
     this.render();
     this.form.valueChanges.subscribe(
       () => {
-        this.filters = undefined;
+        this.filters = [];
         this.render();
       }
     );
@@ -72,7 +70,7 @@ export class DamagePieComponent implements OnInit {
         this.filters = [...this.filters, this.damageTypeFilter(e.active[0]._chart.config.data.labels[e.active[0]._index])];
       } else {
         this.groupingSelection = 'dType';
-        this.filters = undefined;
+        this.filters = [];
       }
       this.render();
 
@@ -101,8 +99,9 @@ export class DamagePieComponent implements OnInit {
   }
 
   aggregate(dataGrouping: string = 'dType', filters: ((s: EventData) => boolean)[]): { [p: string]: number } {
+    const tempFilt = filters.concat(this.playerFilter());
     return this.rawData
-      .filter(item => filters.every(a => a(item)))
+      .filter(item => tempFilt.every(a => a(item)))
       .reduce((base, value) => ({...base, [value[dataGrouping]]: (base[value[dataGrouping]] || 0) + value.damage}), {});
   }
 
@@ -111,7 +110,7 @@ export class DamagePieComponent implements OnInit {
   }
 
   playerFilter(): (s: EventData) => boolean {
-    return item => item.player === this.form.get('player').value;
+    return item => item.player === this.form?.get('player').value;
   }
 
   render(): void {
