@@ -96,15 +96,6 @@ export class DamagePieComponent implements OnInit {
     this.form?.get('grouping').patchValue(input);
   }
 
-<<<<<<< Updated upstream
-  aggregate(dataGrouping: string = 'dType', filters: ((s: EventData) => boolean)[]): { [p: string]: number } {
-    return this.rawData
-      .filter(item => filters.every(a => a(item)))
-      .reduce((base, value) => ({...base, [value[dataGrouping]]: (base[value[dataGrouping]] || 0) + value.damage}), {});
-  }
-
-=======
->>>>>>> Stashed changes
   damageTypeFilter(dType: string): (s: EventData) => boolean {
     return (item) => item.dType === dType;
   }
@@ -121,12 +112,8 @@ export class DamagePieComponent implements OnInit {
   }
 
   render(): void {
-<<<<<<< Updated upstream
-    const damages = this.aggregate(this.groupingSelection, this.filters?.length ? this.filters : [this.playerFilter()]);
-=======
     const damages = this.aggregate(this.groupingSelection, this.filters);
     console.log(damages);
->>>>>>> Stashed changes
 
     [this.chartLabels, this.chartData, this.chartColors] = Object.entries(damages).reduce((v1, v2) => [
         [...v1[0], v2[0]],
