@@ -202,6 +202,55 @@ export class DataFile {
       spell: 'MAGIC STONE',
       player: 'KEMVARI'
     },
+    // OJJUN -----------------------------------------------
+    {
+      damage: 2,
+      dType: 'SLASHING',
+      spell: 'SCIMITAR',
+      player: 'OJJUN'
+    },
+    {
+      damage: 6,
+      dType: 'SLASHING',
+      spell: 'SCIMITAR',
+      player: 'OJJUN'
+    },
+    {
+      damage: 7,
+      dType: 'SLASHING',
+      spell: 'SCIMITAR',
+      player: 'OJJUN'
+    },
+    {
+      damage: 7,
+      dType: 'SLASHING',
+      spell: 'SCIMITAR',
+      player: 'OJJUN'
+    },
+    {
+      damage: 7,
+      dType: 'SLASHING',
+      spell: 'SCIMITAR',
+      player: 'OJJUN'
+    },
+    {
+      damage: 2,
+      dType: 'BLUDGEONING',
+      spell: 'LIGHT HAMMER',
+      player: 'OJJUN'
+    },
+    {
+      damage: 2,
+      dType: 'BLUDGEONING',
+      spell: 'LIGHT HAMMER',
+      player: 'OJJUN'
+    },
+    {
+      damage: 6,
+      dType: 'RADIANT',
+      spell: 'DIVINE SMITE',
+      player: 'OJJUN'
+    },
     // VIKTOR -----------------------------------------------
     {
       damage: 2,

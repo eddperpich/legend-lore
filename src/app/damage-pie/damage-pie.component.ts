@@ -55,10 +55,6 @@ export class DamagePieComponent implements OnInit {
         this.render();
       }
     );
-
-    // .reduce((v1, v2) => [[...v1[0], v2.damage], [...v1[1], v2.dType]], [[], []]);
-    // { base: { x } }
-    // { x }
   }
 
   onChartHover = ($event: any) => {

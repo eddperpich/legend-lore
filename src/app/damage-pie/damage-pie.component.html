@@ -2,7 +2,7 @@
   <div class="row align-items-center">
     <div class="col-3">
       <form [formGroup]="form">
-        <select formControlName="player" class="custom-select">
+        <select onchange="document.getElementById('character').src='assets/'+this.value+'.png'" formControlName="player" class="custom-select">
           <option *ngFor="let player of players" [value]="player"> {{ player }}</option>
         </select>
         <select formControlName="grouping" class="custom-select">
@@ -28,4 +28,4 @@
     </div>
   </div>
 </div>
-<img src="assets/path861.png" width="18%" class = noselect draggable="false" >
+<img id="character" src="assets/CALAIS.png" width="18%" draggable="false" >
