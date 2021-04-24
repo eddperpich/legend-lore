@@ -11,7 +11,7 @@ import {DamagePieComponent} from './damage-pie/damage-pie.component';
 @NgModule({
   declarations: [
     AppComponent,
-    DamagePieComponent
+    DamagePieComponent,
   ],
   imports: [
     BrowserModule,

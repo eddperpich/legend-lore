@@ -37,7 +37,7 @@ export class DamagePieComponent implements OnInit {
     PSYCHIC: 'rgba(218,112,214)',
     RADIANT: 'rgba(218,165,32)',
     SLASHING: 'rgba(105,105,105)'
-  };
+};
 
   ngOnInit(): void {
     this.form = this.fb.group(
@@ -112,6 +112,8 @@ export class DamagePieComponent implements OnInit {
   render(): void {
     const damages = this.aggregate(this.groupingSelection, this.filters?.length ? this.filters : [this.playerFilter()]);
 
+    console.log(Object.entries(damages));
+
     [this.chartLabels, this.chartData, this.chartColors] = Object.entries(damages).reduce((v1, v2) => [
         [...v1[0], v2[0]],
         [...v1[1], v2[1]],
@@ -119,5 +121,7 @@ export class DamagePieComponent implements OnInit {
       ],
       [[], [], []]
     );
+    const test={1: "test"}
+    console.log(test[1])
   }
 }
