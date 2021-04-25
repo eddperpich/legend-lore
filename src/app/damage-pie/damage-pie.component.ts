@@ -1,7 +1,8 @@
 import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup} from '@angular/forms';
 import {Color, SingleDataSet} from 'ng2-charts';
-import {DataFile, EventData} from '../../assets/data';
+import {ActionEvent, Menu} from '../../assets/data';
+import {AuguryApi} from '../services/augury.api';
 
 @Component({
   selector: 'app-damage-pie',
@@ -9,9 +10,9 @@ import {DataFile, EventData} from '../../assets/data';
   styleUrls: ['./damage-pie.component.css']
 })
 export class DamagePieComponent implements OnInit {
-  private filters: ((s: EventData) => boolean)[] = [];
+  private filters: ((s: ActionEvent) => boolean)[] = [];
 
-  constructor(private fb: FormBuilder) {
+  constructor(private fb: FormBuilder, private api: AuguryApi) {
   }
 
   chartLabels: string[] = [];
@@ -25,7 +26,14 @@ export class DamagePieComponent implements OnInit {
   title = 'legend-lore';
   form: FormGroup;
 
-  rawData: EventData[] = DataFile.set1;
+  menu: Menu = {
+    actions: [],
+    encounters: [],
+    sessions: [],
+    players: []
+  };
+
+  rawData: ActionEvent[] = [];
 
   public colorCodes = {
     BLUDGEONING: 'rgba(112,128,144,.8)',
@@ -47,10 +55,26 @@ export class DamagePieComponent implements OnInit {
       }
     );
     this.render();
+    this.api.getMenu().subscribe(
+      item =>
+        this.menu = item
+    );
+    this.api.getActionEventsByPlayer('calais').subscribe(
+      (result) =>
+        this.rawData = result
+    );
     this.form.valueChanges.subscribe(
       () => {
         this.filters = [];
         this.render();
+      }
+    );
+    this.form.get('player').valueChanges.subscribe(
+      value => {
+        this.api.getActionEventsByPlayer(value).subscribe(
+          (result) =>
+            this.rawData = result
+        );
       }
     );
 
@@ -60,8 +84,8 @@ export class DamagePieComponent implements OnInit {
   }
 
   onChartHover = ($event: any) => {
-    // window.console.log('onChartHover', $event);
-  };
+    window.console.log('onChartHover', $event);
+  }
 
   onChartClick(e: any): void {
     if (e.active.length > 0) {
@@ -83,11 +107,11 @@ export class DamagePieComponent implements OnInit {
   }
 
   get players(): string[] {
-    return [...new Set(this.rawData.map(item => item.player))];
+    return this.menu.players.map(item => item.entity.name);
   }
 
   get damageType(): string[] {
-    return [...new Set(this.rawData.map(item => item.dType))];
+    return this.rawData.map(item => item.damageEvent.damageType);
   }
 
   get groupingSelection(): string {
@@ -98,19 +122,19 @@ export class DamagePieComponent implements OnInit {
     this.form?.get('grouping').patchValue(input);
   }
 
-  aggregate(dataGrouping: string = 'dType', filters: ((s: EventData) => boolean)[]): { [p: string]: number } {
+  aggregate(dataGrouping: string = 'dType', filters: ((s: ActionEvent) => boolean)[]): { [p: string]: number } {
     const tempFilt = filters.concat(this.playerFilter());
     return this.rawData
       .filter(item => tempFilt.every(a => a(item)))
-      .reduce((base, value) => ({...base, [value[dataGrouping]]: (base[value[dataGrouping]] || 0) + value.damage}), {});
+      .reduce((base, value) => ({...base, [value[dataGrouping]]: (base[value[dataGrouping]] || 0) + value.damageEvent.damageVal}), {});
   }
 
-  damageTypeFilter(dType: string): (s: EventData) => boolean {
-    return (item) => item.dType === dType;
+  damageTypeFilter(dType: string): (s: ActionEvent) => boolean {
+    return (item) => item.damageEvent.damageType === dType;
   }
 
-  playerFilter(): (s: EventData) => boolean {
-    return item => item.player === this.form?.get('player')?.value;
+  playerFilter(): (s: ActionEvent) => boolean {
+    return item => item.source.name === this.form?.get('player')?.value;
   }
 
   render(): void {

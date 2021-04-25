@@ -7,6 +7,7 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { ChartsModule } from 'ng2-charts';
 import {ReactiveFormsModule} from '@angular/forms';
 import {DamagePieComponent} from './damage-pie/damage-pie.component';
+import {HttpClientModule} from '@angular/common/http';
 
 @NgModule({
   declarations: [
@@ -18,7 +19,8 @@ import {DamagePieComponent} from './damage-pie/damage-pie.component';
     AppRoutingModule,
     NgbModule,
     ChartsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    HttpClientModule
   ],
   providers: [],
   bootstrap: [AppComponent]

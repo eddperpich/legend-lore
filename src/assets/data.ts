@@ -1,12 +1,85 @@
-export interface EventData {
-  damage: number;
-  dType: 'BLUDGEONING' | 'COLD' | 'FIRE' | 'FORCE' | 'NECROTIC' | 'POISON' | 'PSYCHIC' | 'RADIANT' | 'SLASHING';
-  spell: string;
-  player: string;
+export interface ActionEvent {
+  actionEvent: number;
+  damageEvent?: Damage;
+  healingEvent?: Healing;
+  assistEvent?: Assist;
+  preventionEvent?: Prevention;
+  action: Action;
+  source: Entity;
+  encounter: Encounter;
+}
+export interface Menu {
+  players: Players[];
+  actions: Action[];
+  sessions: Session[];
+  encounters: Encounter[];
 }
 
+
+export interface Action {
+  action: number;
+  actionTitle: string;
+}
+
+export interface Encounter {
+  id: number;
+  session: Session;
+  description: string;
+}
+
+export interface Session {
+  session: number;
+  sessionTitle: string;
+}
+
+export interface Players {
+  player: number;
+  playerName: string;
+  className: string;
+  race: string;
+  description: string;
+  entity: Entity;
+}
+
+export interface Entity {
+  entity: number;
+  name: string;
+}
+
+export interface Damage {
+  id: number;
+  targetId: Entity;
+  damageVal: number;
+  damageType: 'BLUDGEONING' | 'COLD' | 'FIRE' | 'FORCE' | 'NECROTIC' | 'POISON' | 'PSYCHIC' | 'RADIANT' | 'SLASHING';
+}
+
+export interface Entity {
+  entity: number;
+  name: string;
+}
+
+export interface Healing {
+  healingEvent: number;
+  targetId: Entity;
+  healingVal: number;
+}
+
+export interface Assist {
+  assistEvent: number;
+  targetId?: null;
+  actionEvent: Action;
+  assistVal: number;
+}
+
+export interface Prevention {
+  preventionEvent: number;
+  targetId: Entity;
+  preventionValue: number;
+}
+
+
 export class DataFile {
-  public static set1: EventData[] = [
+  public static set1 = [
     // CALAIS -----------------------------------------------
     {
       damage: 8,
