@@ -15,7 +15,7 @@ export class AuguryApi {
   apiKey = 'wl9AdZKG0466rzZEDhtkBNDC';
 
   getActionEventsByPlayer(name: string): Observable<ActionEvent[]> {
-    const url = this.url + '/player-actions/player/' + name;
+    const url = this.url + '/action-events/player/' + name;
     return this.client.get<ActionEvent[]>(url, {
       observe: 'body',
       headers: {
@@ -30,7 +30,7 @@ export class AuguryApi {
   }
 
   getMenu(): Observable<Menu> {
-    const url = this.url + '/menu';
+    const url = this.url + '/menu/';
     return this.client.get<Menu>(url, {
       observe: 'body',
       headers: {

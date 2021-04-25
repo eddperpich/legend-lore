@@ -4,6 +4,11 @@ import {Color, SingleDataSet} from 'ng2-charts';
 import {ActionEvent, Menu} from '../../assets/data';
 import {AuguryApi} from '../services/augury.api';
 
+enum GroupingType {
+  DAMAGE_TYPE,
+  ACTION
+}
+
 @Component({
   selector: 'app-damage-pie',
   templateUrl: './damage-pie.component.html',
@@ -36,22 +41,22 @@ export class DamagePieComponent implements OnInit {
   rawData: ActionEvent[] = [];
 
   public colorCodes = {
-    BLUDGEONING: 'rgba(112,128,144,.8)',
-    COLD: 'rgba(65,105,225,.8)',
-    FIRE: 'rgba(128,0,0,.8)',
-    FORCE: 'rgba(245,245,245,.8)',
-    NECROTIC: 'rgba(46,139,87,.8)',
-    POISON: 'rgba(72,61,139,.8)',
-    PSYCHIC: 'rgba(218,112,214,.8)',
-    RADIANT: 'rgba(218,165,32,.8)',
-    SLASHING: 'rgba(105,105,105,.8)'
+    BLUDGEONING: 'rgba(112,128,144)',
+    COLD: 'rgba(65,105,225)',
+    FIRE: 'rgba(128,0,0)',
+    FORCE: 'rgba(245,245,245)',
+    NECROTIC: 'rgba(46,139,87)',
+    POISON: 'rgba(72,61,139)',
+    PSYCHIC: 'rgba(218,112,214)',
+    RADIANT: 'rgba(218,165,32)',
+    SLASHING: 'rgba(105,105,105)'
   };
 
   ngOnInit(): void {
     this.form = this.fb.group(
       {
         player: 'CALAIS',
-        grouping: 'dType'
+        grouping: '0'
       }
     );
     this.render();
@@ -84,16 +89,17 @@ export class DamagePieComponent implements OnInit {
   }
 
   onChartHover = ($event: any) => {
-    window.console.log('onChartHover', $event);
-  }
+    // window.console.log('onChartHover', $event);
+  };
 
   onChartClick(e: any): void {
     if (e.active.length > 0) {
-      if (this.groupingSelection !== 'spell') {
-        this.groupingSelection = 'spell';
+      // const slice = e.active[0]._chart.config.data.labels[e.active[0]._index]
+      if (this.groupingSelection !== GroupingType.ACTION) {
+        this.groupingSelection = GroupingType.ACTION;
         this.filters = [...this.filters, this.damageTypeFilter(e.active[0]._chart.config.data.labels[e.active[0]._index])];
       } else {
-        this.groupingSelection = 'dType';
+        this.groupingSelection = GroupingType.DAMAGE_TYPE;
         this.filters = [];
       }
       this.render();
@@ -114,19 +120,34 @@ export class DamagePieComponent implements OnInit {
     return this.rawData.map(item => item.damageEvent.damageType);
   }
 
-  get groupingSelection(): string {
+  get groupingSelection(): GroupingType {
     return this.form?.get('grouping').value;
   }
 
-  set groupingSelection(input: string) {
+  set groupingSelection(input: GroupingType) {
     this.form?.get('grouping').patchValue(input);
   }
 
-  aggregate(dataGrouping: string = 'dType', filters: ((s: ActionEvent) => boolean)[]): { [p: string]: number } {
+  aggregate(dataGrouping: GroupingType, filters: ((s: ActionEvent) => boolean)[]): { [p: string]: number } {
     const tempFilt = filters.concat(this.playerFilter());
+    console.log(this.rawData);
     return this.rawData
       .filter(item => tempFilt.every(a => a(item)))
-      .reduce((base, value) => ({...base, [value[dataGrouping]]: (base[value[dataGrouping]] || 0) + value.damageEvent.damageVal}), {});
+      .reduce((base, value) => ({...base,
+        [this.groupExtractor(value, dataGrouping)]: (base[this.groupExtractor(value, dataGrouping)] || 0) + value.damageEvent.damageVal
+      }), {});
+  }
+
+  groupExtractor(a: ActionEvent, group: GroupingType): string {
+    console.log(group);
+    switch (group) {
+      case GroupingType.DAMAGE_TYPE:
+        return a.damageEvent.damageType;
+      case GroupingType.ACTION:
+        return a.action.actionTitle;
+      default:
+        return '';
+    }
   }
 
   damageTypeFilter(dType: string): (s: ActionEvent) => boolean {
@@ -138,12 +159,15 @@ export class DamagePieComponent implements OnInit {
   }
 
   render(): void {
-    const damages = this.aggregate(this.groupingSelection, this.filters);
-
+    const damages = this.aggregate(this.groupingSelection, this.filters?.length ? this.filters : [this.playerFilter()]);
+    console.log(damages);
     [this.chartLabels, this.chartData, this.chartColors] = Object.entries(damages).reduce((v1, v2) => [
         [...v1[0], v2[0]],
         [...v1[1], v2[1]],
-        [{backgroundColor: [...v1[2][0]?.backgroundColor || [], this.colorCodes[v2[0]]]}]
+        [{
+          backgroundColor: [...v1[2][0]?.backgroundColor || [], this?.colorCodes[v2[0]] ? this.colorCodes[v2[0]] :
+            this.colorCodes.PSYCHIC]
+        }]
       ],
       [[], [], []]
     );
