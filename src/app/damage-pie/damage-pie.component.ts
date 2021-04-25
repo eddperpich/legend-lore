@@ -3,6 +3,7 @@ import {FormBuilder, FormGroup} from '@angular/forms';
 import {Color, SingleDataSet} from 'ng2-charts';
 import {ActionEvent, Menu} from '../../assets/data';
 import {AuguryApi} from '../services/augury.api';
+import {forkJoin, zip} from 'rxjs';
 
 enum GroupingType {
   DAMAGE_TYPE,
@@ -23,7 +24,6 @@ export class DamagePieComponent implements OnInit {
   chartLabels: string[] = [];
   chartData: SingleDataSet[] = [];
   chartColors: Color[] = [];
-
   chartOptions = {
     responsive: true
   };
@@ -59,14 +59,12 @@ export class DamagePieComponent implements OnInit {
         grouping: '0'
       }
     );
-    this.render();
-    this.api.getMenu().subscribe(
-      item =>
-        this.menu = item
-    );
-    this.api.getActionEventsByPlayer('calais').subscribe(
-      (result) =>
-        this.rawData = result
+    zip(this.api.getMenu(), this.api.getActionEventsByPlayer('calais')).subscribe(
+      ([menu, actionEvents]) => {
+        this.menu = menu;
+        this.rawData = actionEvents;
+        this.render();
+      }
     );
     this.form.valueChanges.subscribe(
       () => {
@@ -121,11 +119,18 @@ export class DamagePieComponent implements OnInit {
   }
 
   get groupingSelection(): GroupingType {
-    return this.form?.get('grouping').value;
+    switch (this.form?.get('grouping').value) {
+      case '0':
+        return GroupingType.DAMAGE_TYPE;
+      case '1':
+        return GroupingType.ACTION;
+      default:
+        return GroupingType.DAMAGE_TYPE;
+    }
   }
 
   set groupingSelection(input: GroupingType) {
-    this.form?.get('grouping').patchValue(input);
+    this.form?.get('grouping').patchValue(input.valueOf().toString());
   }
 
   aggregate(dataGrouping: GroupingType, filters: ((s: ActionEvent) => boolean)[]): { [p: string]: number } {
@@ -133,21 +138,20 @@ export class DamagePieComponent implements OnInit {
     console.log(this.rawData);
     return this.rawData
       .filter(item => tempFilt.every(a => a(item)))
-      .reduce((base, value) => ({...base,
+      .reduce((base, value) => ({
+        ...base,
         [this.groupExtractor(value, dataGrouping)]: (base[this.groupExtractor(value, dataGrouping)] || 0) + value.damageEvent.damageVal
       }), {});
   }
 
   groupExtractor(a: ActionEvent, group: GroupingType): string {
-    console.log(group);
-    switch (group) {
-      case GroupingType.DAMAGE_TYPE:
-        return a.damageEvent.damageType;
-      case GroupingType.ACTION:
-        return a.action.actionTitle;
-      default:
-        return '';
+    if (group === GroupingType.DAMAGE_TYPE) {
+      return a.damageEvent.damageType;
     }
+    if (group === GroupingType.ACTION) {
+      return a.action.actionTitle;
+    }
+    return '';
   }
 
   damageTypeFilter(dType: string): (s: ActionEvent) => boolean {
