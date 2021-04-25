@@ -1,6 +1,8 @@
+import { stripGeneratedFileSuffix } from '@angular/compiler/src/aot/util';
 import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup} from '@angular/forms';
 import {Color, SingleDataSet} from 'ng2-charts';
+import { isLabeledStatement } from 'typescript';
 import {DataFile, EventData} from '../../assets/data';
 
 @Component({
@@ -61,6 +63,7 @@ export class DamagePieComponent implements OnInit {
 
   onChartClick(e: any): void {
     if (e.active.length > 0) {
+      // const slice = e.active[0]._chart.config.data.labels[e.active[0]._index]
       if (this.groupingSelection !== 'spell') {
         this.groupingSelection = 'spell';
         this.filters = [...this.filters, this.damageTypeFilter(e.active[0]._chart.config.data.labels[e.active[0]._index])];
@@ -93,14 +96,7 @@ export class DamagePieComponent implements OnInit {
   set groupingSelection(input: string) {
     this.form?.get('grouping').patchValue(input);
   }
-
-  aggregate(dataGrouping: string = 'dType', filters: ((s: EventData) => boolean)[]): { [p: string]: number } {
-    const tempFilt = filters.concat(this.playerFilter());
-    return this.rawData
-      .filter(item => tempFilt.every(a => a(item)))
-      .reduce((base, value) => ({...base, [value[dataGrouping]]: (base[value[dataGrouping]] || 0) + value.damage}), {});
-  }
-
+  
   damageTypeFilter(dType: string): (s: EventData) => boolean {
     return (item) => item.dType === dType;
   }
@@ -109,19 +105,23 @@ export class DamagePieComponent implements OnInit {
     return item => item.player === this.form?.get('player').value;
   }
 
+  aggregate(dataGrouping: string = 'dType', filters: ((s: EventData) => boolean)[]): { [p: string]: number } {
+    const tempFilt = filters.concat(this.playerFilter());
+    return this.rawData
+      .filter(item => tempFilt.every(a => a(item)))
+      .reduce((base, value) => ({...base, [value[dataGrouping]]: (base[value[dataGrouping]] || 0) + value.damage}), {});
+  }
+
   render(): void {
     const damages = this.aggregate(this.groupingSelection, this.filters?.length ? this.filters : [this.playerFilter()]);
-
-    console.log(Object.entries(damages));
 
     [this.chartLabels, this.chartData, this.chartColors] = Object.entries(damages).reduce((v1, v2) => [
         [...v1[0], v2[0]],
         [...v1[1], v2[1]],
-        [{backgroundColor: [...v1[2][0]?.backgroundColor || [], this.colorCodes[v2[0]]]}]
+        [{backgroundColor: [...v1[2][0]?.backgroundColor || [], this?.colorCodes[v2[0]] ? this.colorCodes[v2[0]] :
+          this.colorCodes["PSYCHIC"]]}]
       ],
       [[], [], []]
     );
-    const test={1: "test"}
-    console.log(test[1])
   }
 }
