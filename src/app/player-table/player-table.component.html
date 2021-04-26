@@ -1,0 +1,16 @@
+<table class="table">
+  <thead>
+  <th scope="col">Name</th>
+  <th scope="col">Player</th>
+  <th scope="col">Class</th>
+  <th scope="col">Race</th>
+  </thead>
+  <tbody>
+  <tr *ngFor="let player of players">
+    <td scope="row"> {{ player.entity.name }}</td>
+    <td scope="row"> {{ player.playerName }}</td>
+    <td scope="row"> {{ player.className }}</td>
+    <td scope="row"> {{ player.race }}</td>
+  </tr>
+  </tbody>
+</table>
