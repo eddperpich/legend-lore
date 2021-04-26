@@ -25,7 +25,8 @@ export class DamagePieComponent implements OnInit {
   chartData: SingleDataSet[] = [];
   chartColors: Color[] = [];
   chartOptions = {
-    responsive: true
+    responsive: true,
+    legend: { position: 'right' }
   };
 
   title = 'legend-lore';
