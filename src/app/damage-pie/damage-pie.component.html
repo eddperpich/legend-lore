@@ -1,17 +1,18 @@
+<h4 class="text-center font-italic">{{ currentPlayer?.description }}</h4>
 <div class="container">
   <div class="row align-items-center">
-    <div class="col-3">
+    <div class="col-3" >
       <form [formGroup]="form">
-        <select onchange="document.getElementById('character').src='assets/'+this.value+'.png'" formControlName="player" class="custom-select">
+        <select formControlName="player" class="custom-select">
           <option *ngFor="let player of players" [value]="player"> {{ player }}</option>
         </select>
         <select formControlName="grouping" class="custom-select">
-          <option [value]="0"> Damage Type </option>
-          <option [value]="1"> Spell </option>
+          <option [value]="0">Damage Type</option>
+          <option [value]="1">Spell</option>
         </select>
       </form>
     </div>
-    <div class="col-9">
+    <div class="col-9 position-relative">
       <canvas
         baseChart
         [chartType]="'pie'"
@@ -25,7 +26,10 @@
         (chartClick)="onChartClick($event)"
       >
       </canvas>
+      <img id="character" class="position-absolute" [ngStyle]="getPlayerPortrait" draggable="false" >
     </div>
   </div>
+  <div class="row">
+    <app-player-table [players]="menu.players"></app-player-table>
+  </div>
 </div>
-<img id="character" src="assets/CALAIS.png" width="18%" draggable="false" >

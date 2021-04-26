@@ -1,9 +1,9 @@
 import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup} from '@angular/forms';
 import {Color, SingleDataSet} from 'ng2-charts';
-import {ActionEvent, Menu} from '../../assets/data';
+import {ActionEvent, Menu, Players} from '../../assets/data';
 import {AuguryApi} from '../services/augury.api';
-import {forkJoin, zip} from 'rxjs';
+import {zip} from 'rxjs';
 
 enum GroupingType {
   DAMAGE_TYPE,
@@ -55,7 +55,7 @@ export class DamagePieComponent implements OnInit {
   ngOnInit(): void {
     this.form = this.fb.group(
       {
-        player: 'CALAIS',
+        player: 'Calais',
         grouping: '0'
       }
     );
@@ -75,8 +75,10 @@ export class DamagePieComponent implements OnInit {
     this.form.get('player').valueChanges.subscribe(
       value => {
         this.api.getActionEventsByPlayer(value).subscribe(
-          (result) =>
-            this.rawData = result
+          (result) => {
+            this.rawData = result;
+            this.render();
+          }
         );
       }
     );
@@ -175,5 +177,28 @@ export class DamagePieComponent implements OnInit {
       ],
       [[], [], []]
     );
+  }
+
+  get getPlayerPortrait(): { [p: string]: string } {
+    const name = this.currentPlayer?.entity?.name.toUpperCase();
+    return {
+      content: 'url(assets/' + name + '.png)',
+      width: '35%',
+      top: '0',
+    };
+  }
+
+  get currentPlayer(): Players {
+    return this.menu.players.find(item => (this.form?.get('player')?.value) === item?.entity?.name) || {
+      id: 0,
+      description: '',
+      entity: {
+        id: 0,
+        name: ''
+      },
+      playerName: '',
+      className: '',
+      race: ''
+    };
   }
 }

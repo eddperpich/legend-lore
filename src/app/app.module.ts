@@ -8,11 +8,13 @@ import { ChartsModule } from 'ng2-charts';
 import {ReactiveFormsModule} from '@angular/forms';
 import {DamagePieComponent} from './damage-pie/damage-pie.component';
 import {HttpClientModule} from '@angular/common/http';
+import { PlayerTableComponent } from './player-table/player-table.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     DamagePieComponent,
+    PlayerTableComponent,
   ],
   imports: [
     BrowserModule,
