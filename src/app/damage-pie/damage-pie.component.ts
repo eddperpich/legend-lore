@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup} from '@angular/forms';
 import {Color, SingleDataSet} from 'ng2-charts';
-import {ActionEvent, Menu, Players} from '../../assets/data';
+import {ActionEvent, DataUtils, Menu, Players} from '../../assets/data';
 import {AuguryApi} from '../services/augury.api';
 import {zip} from 'rxjs';
 
@@ -148,7 +148,7 @@ export class DamagePieComponent implements OnInit {
 
   groupExtractor(a: ActionEvent, group: GroupingType): string {
     if (group === GroupingType.DAMAGE_TYPE) {
-      return a.damageEvent.damageType;
+      return DataUtils.getDamageType(a);
     }
     if (group === GroupingType.ACTION) {
       return a.action.actionTitle;
@@ -157,7 +157,7 @@ export class DamagePieComponent implements OnInit {
   }
 
   damageTypeFilter(dType: string): (s: ActionEvent) => boolean {
-    return (item) => item.damageEvent.damageType === dType;
+    return (item) => DataUtils.getDamageType(item) === dType;
   }
 
   playerFilter(): (s: ActionEvent) => boolean {
