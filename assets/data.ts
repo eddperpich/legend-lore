@@ -78,4 +78,10 @@ export interface Prevention {
   preventionValue: number;
 }
 
+export class DataUtils {
+  static getDamageType(action: ActionEvent): string {
+    return action?.damageEvent?.damageType || action.action.damageType;
+  }
+}
+
 type DamageType = 'BLUDGEONING' | 'COLD' | 'FIRE' | 'FORCE' | 'NECROTIC' | 'POISON' | 'PSYCHIC' | 'RADIANT' | 'SLASHING';
