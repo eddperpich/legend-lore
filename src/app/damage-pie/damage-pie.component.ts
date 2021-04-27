@@ -4,11 +4,18 @@ import {Color, SingleDataSet} from 'ng2-charts';
 import {ActionEvent, DataUtils, Menu, Players} from '../../assets/data';
 import {AuguryApi} from '../services/augury.api';
 import {zip} from 'rxjs';
+import {ChartOptions} from 'chart.js';
 
 enum GroupingType {
   DAMAGE_TYPE,
   ACTION
 }
+
+interface GraphData {
+  [p: string]: { value: number, color: { backgroundColor: string | string[] } };
+}
+
+type GraphInput = [string[], number[], Color[]];
 
 @Component({
   selector: 'app-damage-pie',
@@ -16,17 +23,64 @@ enum GroupingType {
   styleUrls: ['./damage-pie.component.css']
 })
 export class DamagePieComponent implements OnInit {
-  private filters: ((s: ActionEvent) => boolean)[] = [];
 
   constructor(private fb: FormBuilder, private api: AuguryApi) {
   }
 
+  get players(): string[] {
+    return this.menu.players.map(item => item.entity.name);
+  }
+
+  get damageType(): string[] {
+    return this.rawData.map(item => item.damageEvent.damageType);
+  }
+
+  get groupingSelection(): GroupingType {
+    switch (this.form?.get('grouping').value) {
+      case '0':
+        return GroupingType.DAMAGE_TYPE;
+      case '1':
+        return GroupingType.ACTION;
+      default:
+        return GroupingType.DAMAGE_TYPE;
+    }
+  }
+
+  set groupingSelection(input: GroupingType) {
+    this.form?.get('grouping').patchValue(input.valueOf().toString());
+  }
+
+  get getPlayerPortrait(): { [p: string]: string } {
+    const name = this.currentPlayer?.entity?.name.toUpperCase();
+    return {
+      content: 'url(assets/' + name + '.png)',
+      width: '35%',
+      top: '0',
+    };
+  }
+
+  get currentPlayer(): Players {
+    return this.menu.players.find(item => (this.form?.get('player')?.value) === item?.entity?.name) || {
+      id: 0,
+      description: '',
+      entity: {
+        id: 0,
+        name: ''
+      },
+      playerName: '',
+      className: '',
+      race: ''
+    };
+  }
+
+  private filters: ((s: ActionEvent) => boolean)[] = [];
+
   chartLabels: string[] = [];
-  chartData: SingleDataSet[] = [];
+  chartData: SingleDataSet = [];
   chartColors: Color[] = [];
-  chartOptions = {
+  chartOptions: ChartOptions = {
     responsive: true,
-    legend: { position: 'right' }
+    legend: {position: 'right'}
   };
 
   title = 'legend-lore';
@@ -41,17 +95,27 @@ export class DamagePieComponent implements OnInit {
 
   rawData: ActionEvent[] = [];
 
-  public colorCodes = {
-    BLUDGEONING: 'rgba(112,128,144)',
-    COLD: 'rgba(65,105,225)',
-    FIRE: 'rgba(128,0,0)',
-    FORCE: 'rgba(245,245,245)',
-    NECROTIC: 'rgba(46,139,87)',
-    POISON: 'rgba(72,61,139)',
-    PSYCHIC: 'rgba(218,112,214)',
-    RADIANT: 'rgba(218,165,32)',
-    SLASHING: 'rgba(105,105,105)'
+  public colorCodes: { [p: string]: string } = {
+    BLUDGEONING: 'hsl(210, 13%, 50%)',
+    COLD: 'hsl(225, 73%, 57%)',
+    FIRE: 'hsl(0, 100%, 25%)',
+    FORCE: 'hsl(0, 0%, 96%)',
+    NECROTIC: 'hsl(146, 50%, 36%)',
+    POISON: 'hsl(248, 39%, 39%)',
+    PSYCHIC: 'hsl(302, 59%, 65%)',
+    RADIANT: 'hsl(43, 74%, 49%)',
+    SLASHING: 'hsl(0, 0%, 41%)'
   };
+
+  static groupExtractor(a: ActionEvent, group: GroupingType): string {
+    if (group === GroupingType.DAMAGE_TYPE) {
+      return DataUtils.getDamageType(a);
+    }
+    if (group === GroupingType.ACTION) {
+      return a.action.actionTitle;
+    }
+    return '';
+  }
 
   ngOnInit(): void {
     this.form = this.fb.group(
@@ -113,48 +177,30 @@ export class DamagePieComponent implements OnInit {
     }
   }
 
-  get players(): string[] {
-    return this.menu.players.map(item => item.entity.name);
-  }
-
-  get damageType(): string[] {
-    return this.rawData.map(item => item.damageEvent.damageType);
-  }
-
-  get groupingSelection(): GroupingType {
-    switch (this.form?.get('grouping').value) {
-      case '0':
-        return GroupingType.DAMAGE_TYPE;
-      case '1':
-        return GroupingType.ACTION;
-      default:
-        return GroupingType.DAMAGE_TYPE;
-    }
-  }
-
-  set groupingSelection(input: GroupingType) {
-    this.form?.get('grouping').patchValue(input.valueOf().toString());
-  }
-
-  aggregate(dataGrouping: GroupingType, filters: ((s: ActionEvent) => boolean)[]): { [p: string]: number } {
+  aggregate(dataGrouping: GroupingType, filters: ((s: ActionEvent) => boolean)[] = []): GraphData {
     const tempFilt = filters.concat(this.playerFilter());
     console.log(this.rawData);
-    return this.rawData
+    const data = this.rawData
       .filter(item => tempFilt.every(a => a(item)))
-      .reduce((base, value) => ({
+      .reduce((base: GraphData, event) => ({
         ...base,
-        [this.groupExtractor(value, dataGrouping)]: (base[this.groupExtractor(value, dataGrouping)] || 0) + value.damageEvent.damageVal
+        [DamagePieComponent.groupExtractor(event, dataGrouping)]: {
+          value: (base[DamagePieComponent.groupExtractor(event, dataGrouping)]?.value || 0) + event.damageEvent.damageVal,
+          color: {backgroundColor: [(this.colorCodes[DataUtils.getDamageType(event)] || this.colorCodes.PSYCHIC)]}
+        }
       }), {});
-  }
-
-  groupExtractor(a: ActionEvent, group: GroupingType): string {
-    if (group === GroupingType.DAMAGE_TYPE) {
-      return DataUtils.getDamageType(a);
-    }
-    if (group === GroupingType.ACTION) {
-      return a.action.actionTitle;
-    }
-    return '';
+    const colorData = DataUtils.reverseMap(data, (item) => item.color.backgroundColor[0]);
+    Object.entries(data)
+      .forEach(([key, value], index, array) => {
+        const itemListForColor = colorData[value.color.backgroundColor[0]];
+        const indexOfItem = itemListForColor.findIndex(item => item.originalKey === key);
+        const colorString = value.color.backgroundColor[0];
+        const [, hue, saturation, luminance] = colorString.match(/hsl\(\s*(\d+)\s*,\s*(\d+(?:\.\d+)?%)\s*,\s*(\d+(?:\.\d+)*)?%\)/);
+        const luminanceFloat = Number.parseFloat(luminance);
+        const lumResult = (luminanceFloat / itemListForColor.length) * (indexOfItem + 1);
+        value.color.backgroundColor = [`hsl(` + hue + ',' + saturation + ',' + lumResult + '%)'];
+      });
+    return data;
   }
 
   damageTypeFilter(dType: string): (s: ActionEvent) => boolean {
@@ -166,40 +212,16 @@ export class DamagePieComponent implements OnInit {
   }
 
   render(): void {
-    const damages = this.aggregate(this.groupingSelection, this.filters?.length ? this.filters : [this.playerFilter()]);
-    console.log(damages);
-    [this.chartLabels, this.chartData, this.chartColors] = Object.entries(damages).reduce((v1, v2) => [
-        [...v1[0], v2[0]],
-        [...v1[1], v2[1]],
-        [{
-          backgroundColor: [...v1[2][0]?.backgroundColor || [], this?.colorCodes[v2[0]] ? this.colorCodes[v2[0]] :
-            this.colorCodes.PSYCHIC]
-        }]
-      ],
+    const damages: GraphData = this.aggregate(this.groupingSelection, this.filters);
+    [this.chartLabels, this.chartData, this.chartColors] = this.convertGraphData(damages);
+  }
+
+  private convertGraphData(damages: GraphData): GraphInput {
+    return Object.entries(damages).reduce(([labelA, valueA, colorA]: GraphInput, [label, item]) => [
+        [...labelA, label],
+        [...valueA, item.value],
+        [{backgroundColor: [...colorA[0]?.backgroundColor || [], ...item.color.backgroundColor]}]],
       [[], [], []]
     );
-  }
-
-  get getPlayerPortrait(): { [p: string]: string } {
-    const name = this.currentPlayer?.entity?.name.toUpperCase();
-    return {
-      content: 'url(assets/' + name + '.png)',
-      width: '35%',
-      top: '0',
-    };
-  }
-
-  get currentPlayer(): Players {
-    return this.menu.players.find(item => (this.form?.get('player')?.value) === item?.entity?.name) || {
-      id: 0,
-      description: '',
-      entity: {
-        id: 0,
-        name: ''
-      },
-      playerName: '',
-      className: '',
-      race: ''
-    };
   }
 }
