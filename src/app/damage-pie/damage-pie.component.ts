@@ -96,10 +96,10 @@ export class DamagePieComponent implements OnInit {
   rawData: ActionEvent[] = [];
 
   public colorCodes: { [p: string]: string } = {
-    BLUDGEONING: 'hsl(210, 13%, 50%)',
+    BLUDGEONING: 'hsl(210, 8%, 50%)',
     COLD: 'hsl(225, 73%, 57%)',
     FIRE: 'hsl(0, 100%, 25%)',
-    FORCE: 'hsl(0, 0%, 96%)',
+    FORCE: 'hsl(0, 0%, 85%)',
     NECROTIC: 'hsl(146, 50%, 36%)',
     POISON: 'hsl(248, 39%, 39%)',
     PSYCHIC: 'hsl(302, 59%, 65%)',
@@ -168,18 +168,11 @@ export class DamagePieComponent implements OnInit {
         this.filters = [];
       }
       this.render();
-
-      // documentation because imagine reading docs
-      // this.chartData = [[100, 50, 60]]; add filter by damage type LABEL
-      // console.log("Index" , e.active[0]._index);
-      // console.log("Data" , e.active[0]._chart.config.data.datasets[0].data[e.active[0]._index]);
-      // console.log("Label" , e.active[0]._chart.config.data.labels[e.active[0]._index]);
     }
   }
 
   aggregate(dataGrouping: GroupingType, filters: ((s: ActionEvent) => boolean)[] = []): GraphData {
     const tempFilt = filters.concat(this.playerFilter());
-    console.log(this.rawData);
     const data = this.rawData
       .filter(item => tempFilt.every(a => a(item)))
       .reduce((base: GraphData, event) => ({
@@ -197,7 +190,12 @@ export class DamagePieComponent implements OnInit {
         const colorString = value.color;
         const [, hue, saturation, luminance] = colorString.match(/hsl\(\s*(\d+)\s*,\s*(\d+(?:\.\d+)?%)\s*,\s*(\d+(?:\.\d+)*)?%\)/);
         const luminanceFloat = Number.parseFloat(luminance);
-        const lumResult = (luminanceFloat / itemListForColor.length) * (indexOfItem + 1);
+        // hue * iter / L -> darker spread
+        // 100 - (100 - hue) * iter / L -> lighter spread
+        // this also changes sortin OMEGALUL
+        const colorMode = 1
+        const scale = .7 // should be less than 1, .7 seems good
+        const lumResult = (colorMode*100 - (colorMode*100 - luminanceFloat) * Math.pow(indexOfItem + 1, scale) / Math.pow(itemListForColor.length, scale));
         value.color = `hsl(` + hue + ',' + saturation + ',' + lumResult + '%)';
       });
     return data;
