@@ -12,7 +12,7 @@ enum GroupingType {
 }
 
 interface GraphData {
-  [p: string]: { value: number, color: { backgroundColor: string | string[] } };
+  [p: string]: { value: number, color: string };
 }
 
 type GraphInput = [string[], number[], Color[]];
@@ -186,19 +186,19 @@ export class DamagePieComponent implements OnInit {
         ...base,
         [DamagePieComponent.groupExtractor(event, dataGrouping)]: {
           value: (base[DamagePieComponent.groupExtractor(event, dataGrouping)]?.value || 0) + event.damageEvent.damageVal,
-          color: {backgroundColor: [(this.colorCodes[DataUtils.getDamageType(event)] || this.colorCodes.PSYCHIC)]}
+          color: (this.colorCodes[DataUtils.getDamageType(event)] || this.colorCodes.PSYCHIC)
         }
       }), {});
-    const colorData = DataUtils.reverseMap(data, (item) => item.color.backgroundColor[0]);
+    const colorData = DataUtils.reverseMap(data, (item) => item.color);
     Object.entries(data)
       .forEach(([key, value], index, array) => {
-        const itemListForColor = colorData[value.color.backgroundColor[0]];
+        const itemListForColor = colorData[value.color];
         const indexOfItem = itemListForColor.findIndex(item => item.originalKey === key);
-        const colorString = value.color.backgroundColor[0];
+        const colorString = value.color;
         const [, hue, saturation, luminance] = colorString.match(/hsl\(\s*(\d+)\s*,\s*(\d+(?:\.\d+)?%)\s*,\s*(\d+(?:\.\d+)*)?%\)/);
         const luminanceFloat = Number.parseFloat(luminance);
         const lumResult = (luminanceFloat / itemListForColor.length) * (indexOfItem + 1);
-        value.color.backgroundColor = [`hsl(` + hue + ',' + saturation + ',' + lumResult + '%)'];
+        value.color = `hsl(` + hue + ',' + saturation + ',' + lumResult + '%)';
       });
     return data;
   }
@@ -217,11 +217,13 @@ export class DamagePieComponent implements OnInit {
   }
 
   private convertGraphData(damages: GraphData): GraphInput {
-    return Object.entries(damages).reduce(([labelA, valueA, colorA]: GraphInput, [label, item]) => [
-        [...labelA, label],
-        [...valueA, item.value],
-        [{backgroundColor: [...colorA[0]?.backgroundColor || [], ...item.color.backgroundColor]}]],
-      [[], [], []]
-    );
+    return Object.entries(damages)
+      .sort(([a, c], [b, d]) => c.color > d.color ? 1 : -1)
+      .reduce(([labelA, valueA, colorA]: GraphInput, [label, item]) => [
+          [...labelA, label],
+          [...valueA, item.value],
+          [{backgroundColor: [...colorA[0]?.backgroundColor || [], item.color]}]],
+        [[], [], []]
+      );
   }
 }
