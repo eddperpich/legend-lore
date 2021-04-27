@@ -82,6 +82,21 @@ export class DataUtils {
   static getDamageType(action: ActionEvent): string {
     return action?.damageEvent?.damageType || action.action.damageType;
   }
+
+  static reverseMap<T>(a: { [p: string]: T }, c: (b: T) => string): { [p: string]: { originalItem: T, originalKey: string }[] } {
+    return Object.entries<T>(a).reduce((d, [k, i]) => ({
+      ...d,
+      [c(i)]: d[c(i)]?.length ? [...d[c(i)], {originalItem: i, originalKey: k}] : [{originalItem: i, originalKey: k}]
+    }), {})
+      ;
+  }
+
+  static reverseMapArray<T>(a: T[], c: (b: T) => string): { [p: string]: T[] } {
+    return a.reduce((d, i) => ({
+      ...d,
+      [c(i)]: d[c(i)]?.length ? [...d[c(i)], i] : [i]
+    }), {});
+  }
 }
 
 type DamageType = 'BLUDGEONING' | 'COLD' | 'FIRE' | 'FORCE' | 'NECROTIC' | 'POISON' | 'PSYCHIC' | 'RADIANT' | 'SLASHING';
