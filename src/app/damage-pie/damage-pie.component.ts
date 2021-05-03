@@ -96,11 +96,13 @@ export class DamagePieComponent implements OnInit {
   rawData: ActionEvent[] = [];
 
   public colorCodes: { [p: string]: string } = {
-    BLUDGEONING: 'hsl(210, 8%, 50%)',
+    BLUDGEONING: 'hsl(146, 12%, 5%)',
     COLD: 'hsl(225, 73%, 57%)',
     FIRE: 'hsl(0, 100%, 25%)',
     FORCE: 'hsl(0, 0%, 85%)',
     NECROTIC: 'hsl(146, 50%, 36%)',
+    NONLETHAL: 'hsl(210, 8%, 50%)',
+    PIERCING: 'hsl(105, 16%, 59%)',
     POISON: 'hsl(248, 39%, 39%)',
     PSYCHIC: 'hsl(302, 59%, 65%)',
     RADIANT: 'hsl(43, 74%, 49%)',
