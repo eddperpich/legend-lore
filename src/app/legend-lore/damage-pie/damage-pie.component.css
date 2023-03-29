@@ -5,3 +5,7 @@
 .quote::after {
   content: '"';
 }
+
+.blue {
+  background-color: blue;
+}

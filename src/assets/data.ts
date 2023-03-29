@@ -99,4 +99,4 @@ export class DataUtils {
   }
 }
 
-type DamageType = 'BLUDGEONING' | 'COLD' | 'FIRE' | 'FORCE' | 'NECROTIC' | 'POISON' | 'PSYCHIC' | 'RADIANT' | 'SLASHING';
+type DamageType = 'BLUDGEONING' | 'COLD' | 'FIRE' | 'FORCE' | 'NECROTIC' | 'NONLETHAL' | 'PIERCING' | 'POISON' | 'PSYCHIC' | 'RADIANT' | 'SLASHING';
