@@ -1,10 +1,10 @@
 import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup} from '@angular/forms';
 import {Color, SingleDataSet} from 'ng2-charts';
-import {ActionEvent, DataUtils, Menu, Players} from '../../assets/data';
-import {AuguryApi} from '../services/augury.api';
+import {ActionEvent, DataUtils, Menu, Players} from '../../../assets/data';
 import {zip} from 'rxjs';
 import {ChartOptions} from 'chart.js';
+import {AuguryApi} from '../services/augury.api';
 
 enum GroupingType {
   DAMAGE_TYPE,

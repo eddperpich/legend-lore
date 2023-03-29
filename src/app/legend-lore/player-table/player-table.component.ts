@@ -1,5 +1,5 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {Players} from '../../assets/data';
+import {Players} from '../../../assets/data';
 
 @Component({
   selector: 'app-player-table',

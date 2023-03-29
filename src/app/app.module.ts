@@ -1,20 +1,17 @@
-import { NgModule } from '@angular/core';
-import { BrowserModule } from '@angular/platform-browser';
+import {NgModule} from '@angular/core';
+import {BrowserModule} from '@angular/platform-browser';
 
-import { AppRoutingModule } from './app-routing.module';
-import { AppComponent } from './app.component';
-import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import { ChartsModule } from 'ng2-charts';
+import {AppRoutingModule} from './app-routing.module';
+import {AppComponent} from './app.component';
+import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
+import {ChartsModule} from 'ng2-charts';
 import {ReactiveFormsModule} from '@angular/forms';
-import {DamagePieComponent} from './damage-pie/damage-pie.component';
 import {HttpClientModule} from '@angular/common/http';
-import { PlayerTableComponent } from './player-table/player-table.component';
+import {LegendLoreModule} from './legend-lore/legend-lore.module';
 
 @NgModule({
   declarations: [
     AppComponent,
-    DamagePieComponent,
-    PlayerTableComponent,
   ],
   imports: [
     BrowserModule,
@@ -22,9 +19,12 @@ import { PlayerTableComponent } from './player-table/player-table.component';
     NgbModule,
     ChartsModule,
     ReactiveFormsModule,
-    HttpClientModule
+    HttpClientModule,
+    LegendLoreModule
   ],
   providers: [],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {
+}
+
