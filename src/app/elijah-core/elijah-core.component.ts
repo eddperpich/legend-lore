@@ -7,7 +7,22 @@ import {Component, OnInit} from '@angular/core';
 })
 export class ElijahCoreComponent implements OnInit {
 
-  readonly projectList = [{
+  constructor() {
+  }
+  private static readonly EMPTY_SORT_STATE = {
+    project: 0,
+    date: 0,
+    client: 0,
+    work: 0
+  };
+  sortState = {
+    project: 0,
+    date: -1,
+    client: 0,
+    work: 0
+  };
+
+  readonly projectList: { project: string, client: string, work: string, date: string, src?: string }[] = [{
     project: 'A MOVEMENT IN EVERY DIRECTION LEGACIES OF THE GREAT MIGRATION',
     client: 'THE BROOKLYN MUSEUM',
     work: 'EXHIBITION, MARKETING',
@@ -103,7 +118,13 @@ export class ElijahCoreComponent implements OnInit {
   ];
   public now: number = Date.now();
 
-  constructor() {
+  sort(key: string): void {
+    const value = this.sortState[key];
+    this.sortState = {...ElijahCoreComponent.EMPTY_SORT_STATE};
+    this.sortState[key] = value === 0 ? 1 : value * -1;
+    this.projectList.sort((item, item2) => {
+      return (item[key].localeCompare(item2[key])) * this.sortState[key];
+    });
   }
 
   ngOnInit(): void {

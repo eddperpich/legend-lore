@@ -3,18 +3,26 @@
   <table class="table-fixed project-table">
     <thead class="border-bottom">
     <th class="pr-3">
-      <div class="table-wrapper">
-        DATE
+      <div class="table-wrapper" (click)="sort('date')"><span
+        [ngStyle]="sortState.date === 0 ? {'opacity': '50%'}: null">{{ sortState.date === -1 ? '↗' : '↘'}}</span>DATE
       </div>
     </th>
     <th>
-      <div class="table-wrapper">PROJECT</div>
+      <div class="table-wrapper" (click)="sort('project')">
+        <span
+          [ngStyle]="sortState.project === 0 ? {'opacity': '50%'}: null">{{ sortState.project === -1 ? '↗' : '↘'}}</span>
+        PROJECT
+      </div>
     </th>
     <th>
-      <div class="table-wrapper">CLIENT</div>
+      <div class="table-wrapper" (click)="sort('client')"><span
+        [ngStyle]="sortState.client === 0 ? {'opacity': '50%'}: null">{{ sortState.client === -1 ? '↗' : '↘'}}</span>CLIENT
+      </div>
     </th>
     <th>
-      <div class="table-wrapper">WORK</div>
+      <div class="table-wrapper" (click)="sort('work')"><span
+        [ngStyle]="sortState.work === 0 ? {'opacity': '50%'}: null">{{ sortState.work === -1 ? '↗' : '↘'}}</span>WORK
+      </div>
     </th>
     </thead>
     <tbody>
