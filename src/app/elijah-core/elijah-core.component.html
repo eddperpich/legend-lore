@@ -1,1 +1,50 @@
-<p>Tee-hee here is where elijah can do funny things</p>
+<body class="landing-page">
+<div class="container position-relative">
+  <table class="table-fixed project-table">
+    <thead class="border-bottom">
+    <th class="pr-3">
+      <div class="table-wrapper">
+        DATE
+      </div>
+    </th>
+    <th>
+      <div class="table-wrapper">PROJECT</div>
+    </th>
+    <th>
+      <div class="table-wrapper">CLIENT</div>
+    </th>
+    <th>
+      <div class="table-wrapper">WORK</div>
+    </th>
+    </thead>
+    <tbody>
+    <tr *ngFor="let i of projectList">
+      <td>
+        <div class="table-wrapper">
+          {{ i.date}}
+        </div>
+      </td>
+      <td>
+        <div class="table-wrapper">
+          <a href="gm-in" class="hover-link">{{ i.project}}</a>
+          <div class="hover-image"><img [src]="i.src ? 'assets/elijah/' + i.src : ''" alt=""></div>
+        </div>
+      </td>
+      <td>
+        <div class="table-wrapper">
+          {{i.client}}
+        </div>
+      </td>
+      <td>
+        <div class="table-wrapper">{{ i.work}}</div>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+  <div class="position-fixed floating-header">
+    <div class="text-center"><a href="ab">ELIJAH BOBO!</a></div>
+    <div><span>{{ now | date: 'hh:mm:ss'}}</span>&nbsp;<a href="ab">ABOUT</a></div>
+  </div>
+</div>
+</body>
+

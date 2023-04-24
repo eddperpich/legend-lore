@@ -8,10 +8,11 @@ import {ChartsModule} from 'ng2-charts';
 import {ReactiveFormsModule} from '@angular/forms';
 import {HttpClientModule} from '@angular/common/http';
 import {LegendLoreModule} from './legend-lore/legend-lore.module';
+import {ElijahCoreModule} from './elijah-core/elijah-core.module';
 
 @NgModule({
   declarations: [
-    AppComponent,
+    AppComponent
   ],
   imports: [
     BrowserModule,
@@ -20,7 +21,8 @@ import {LegendLoreModule} from './legend-lore/legend-lore.module';
     ChartsModule,
     ReactiveFormsModule,
     HttpClientModule,
-    LegendLoreModule
+    LegendLoreModule,
+    ElijahCoreModule
   ],
   providers: [],
   bootstrap: [AppComponent]
